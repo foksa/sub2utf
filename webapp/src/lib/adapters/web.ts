@@ -1,28 +1,24 @@
-import jschardet from 'jschardet';
+import { detect as chardetngDetect } from 'chardetng-wasm';
 import type { FileAdapter, EncodingInfo, ConversionResult } from './types';
 
 /**
- * Web-based file adapter using jschardet and File System Access API
+ * Web-based file adapter using chardetng-wasm (Mozilla's Firefox detector) and File System Access API
  */
 class WebAdapter implements FileAdapter {
   /**
-   * Detect encoding using jschardet
+   * Detect encoding using chardetng-wasm (Firefox's encoding detector compiled to WASM)
    */
   async detectEncoding(file: File): Promise<EncodingInfo> {
     const buffer = await file.arrayBuffer();
     const bytes = new Uint8Array(buffer);
 
-    // Convert to binary string for jschardet
-    let binaryStr = '';
-    for (let i = 0; i < bytes.length; i++) {
-      binaryStr += String.fromCharCode(bytes[i]);
-    }
+    // chardetng returns the encoding name directly (deterministic, no confidence scores)
+    const encoding = chardetngDetect(bytes);
 
-    const result = jschardet.detect(binaryStr);
+    console.log(`[${file.name}] chardetng detected: ${encoding}`);
 
     return {
-      encoding: result.encoding || 'unknown',
-      confidence: result.confidence || 0
+      encoding: encoding || 'unknown'
     };
   }
 

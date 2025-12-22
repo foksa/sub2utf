@@ -2,17 +2,31 @@
 
 Future enhancements for the Subtitle Encoding Converter.
 
-## v1.0 — MVP
+## v0.5 — Web App (Current)
 
-Core functionality:
-- Drag-and-drop single `.srt` files
-- Auto-detect encoding
-- **Encoding dropdown** — override auto-detected encoding per file
-- **Language selector** — Plex-compatible naming (`movie.utf8.{lang}.srt`)
+Web-first implementation:
+- Drag-and-drop `.srt` files
+- Auto-detect encoding with chardetng-wasm (Mozilla's Firefox detector compiled to WebAssembly)
+- Encoding dropdown — override auto-detected encoding per file
+- Language-encoding mismatch warnings
+- Per-file language selector — Plex-compatible naming (`movie.{lang}.srt`)
 - Convert to UTF-8
-- Save next to original file
-- Svelte + Bulma frontend
+- File System Access API for Chrome/Edge (save next to original)
+- Download fallback for Safari/Firefox
+- Configurable settings (encodings, languages) with localStorage persistence
+- Svelte 5 + Bulma frontend
+
+### Future Web Improvements
+- JSZip bundling for multiple file downloads in Safari/Firefox
+- Completion summary after batch conversion
+
+## v1.0 — Native App (Tauri)
+
+Wrap web app in Tauri for native experience:
+- Same Svelte + Bulma UI
 - Tauri + Rust backend
+- Native file system access (all platforms) — save next to original without dialogs
+- Same chardetng detection (native Rust instead of WASM)
 
 ## v2.0 — Batch Processing
 

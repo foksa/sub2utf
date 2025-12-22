@@ -11,8 +11,6 @@ export interface LanguageOption {
 
 /** User-configurable settings */
 export interface Settings {
-  /** Show warning when encoding confidence is below this value (0-1) */
-  confidenceThreshold: number;
   /** Default language suffix for output files (e.g., 'sr' → movie.sr.srt) */
   defaultLanguage: string;
   /** List of encodings available in dropdown (editable by user) */
@@ -24,7 +22,6 @@ export interface Settings {
 const STORAGE_KEY = 'sub2utf-settings';
 
 const defaultSettings: Settings = {
-  confidenceThreshold: 0.7,
   defaultLanguage: 'sr',
   encodings: [
     'UTF-8',

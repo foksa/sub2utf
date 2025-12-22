@@ -27,8 +27,8 @@ export interface FileEntry {
   file: File;
   /** Detected or user-selected encoding */
   encoding: string;
-  /** Confidence level of encoding detection (0-1) */
-  confidence: number;
+  /** Output language code for this file (e.g., 'sr', 'en') */
+  language: string;
   /** Current status in the pipeline */
   status: FileStatus;
   /** Error message if status is 'error' */
@@ -56,14 +56,14 @@ function createFilesStore() {
     },
 
     /** Add new files to the store with 'pending' status */
-    addFiles(files: File[]) {
+    addFiles(files: File[], defaultLanguage: string) {
       update(entries => {
         const newEntries = files.map(file => ({
           id: crypto.randomUUID(),
           name: file.name,
           file,
           encoding: '',
-          confidence: 0,
+          language: defaultLanguage,
           status: 'pending' as FileStatus
         }));
         return [...entries, ...newEntries];

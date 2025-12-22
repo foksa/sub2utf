@@ -14,11 +14,9 @@
   import { webAdapter } from './lib/adapters';
   import DropZone from './components/DropZone.svelte';
   import FileList from './components/FileList.svelte';
-  import LanguageSelect from './components/LanguageSelect.svelte';
   import Settings from './components/Settings.svelte';
 
   // UI state
-  let outputLanguage = $state($settingsStore.defaultLanguage);
   let isConverting = $state(false);
   let showSettings = $state(false);
 
@@ -30,7 +28,7 @@
    * Adds files to store and runs encoding detection.
    */
   async function handleFiles(files: File[]) {
-    filesStore.addFiles(files);
+    filesStore.addFiles(files, $settingsStore.defaultLanguage);
 
     // Detect encoding for each file sequentially
     for (const file of files) {
@@ -47,13 +45,11 @@
         if (result.encoding.toUpperCase() === 'UTF-8') {
           filesStore.updateEntry(entry.id, {
             encoding: result.encoding,
-            confidence: result.confidence,
             status: 'skipped'
           });
         } else {
           filesStore.updateEntry(entry.id, {
             encoding: result.encoding,
-            confidence: result.confidence,
             status: 'ready'
           });
         }
@@ -92,7 +88,7 @@
 
           // Generate output filename: movie.srt → movie.sr.srt
           const baseName = entry.name.replace(/\.srt$/i, '');
-          const outputName = `${baseName}.${outputLanguage}.srt`;
+          const outputName = `${baseName}.${entry.language}.srt`;
 
           await webAdapter.saveFile(outputName, result.content);
         } else {
@@ -112,8 +108,8 @@
     isConverting = false;
   }
 
-  // Count of files ready for conversion (for button label)
-  let readyCount = $derived(filesStore.getEntries().filter(e => e.status === 'ready').length);
+  // Count of files ready for conversion (for button label) - use $filesStore for reactivity
+  let readyCount = $derived($filesStore.filter(e => e.status === 'ready').length);
 </script>
 
 <section class="section">
@@ -142,11 +138,7 @@
     </div>
 
     {#if $filesStore.length > 0}
-      <div class="mt-4 is-flex is-align-items-center is-justify-content-space-between">
-        <div class="is-flex is-align-items-center">
-          <span class="mr-2">Output language:</span>
-          <LanguageSelect value={outputLanguage} onchange={(lang) => outputLanguage = lang} />
-        </div>
+      <div class="mt-4 is-flex is-justify-content-flex-end">
         <div class="buttons">
           <button
             class="button is-primary"

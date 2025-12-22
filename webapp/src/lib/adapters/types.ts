@@ -3,7 +3,6 @@
  */
 export interface EncodingInfo {
   encoding: string;
-  confidence: number;
 }
 
 /**

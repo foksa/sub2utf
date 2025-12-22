@@ -7,7 +7,17 @@
   }
 
   function handleEncoding(id: string, encoding: string) {
-    filesStore.updateEntry(id, { encoding });
+    const entry = $filesStore.find(e => e.id === id);
+    // Reset to ready if file was already converted, so user can convert again
+    const status = entry?.status === 'done' ? 'ready' : entry?.status;
+    filesStore.updateEntry(id, { encoding, status });
+  }
+
+  function handleLanguage(id: string, language: string) {
+    const entry = $filesStore.find(e => e.id === id);
+    // Reset to ready if file was already converted, so user can convert again
+    const status = entry?.status === 'done' ? 'ready' : entry?.status;
+    filesStore.updateEntry(id, { language, status });
   }
 </script>
 
@@ -19,13 +29,14 @@
           <th style="width: 40px"></th>
           <th>File</th>
           <th>Encoding</th>
+          <th>Language</th>
           <th>Status</th>
           <th style="width: 40px"></th>
         </tr>
       </thead>
       <tbody>
         {#each $filesStore as entry (entry.id)}
-          <FileItem {entry} onremove={handleRemove} onencoding={handleEncoding} />
+          <FileItem {entry} onremove={handleRemove} onencoding={handleEncoding} onlanguage={handleLanguage} />
         {/each}
       </tbody>
     </table>
