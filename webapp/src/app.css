@@ -1,0 +1,6 @@
+@import 'bulma/css/bulma.min.css';
+
+#app {
+  padding: 1.5rem;
+  min-height: 100vh;
+}
