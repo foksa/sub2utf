@@ -1,0 +1,9 @@
+.user-response {
+    color: rgb(107, 95, 30);
+    padding: 0px 4px;
+}
+.claude-response-start,
+.claude-response-end {
+    color: rgb(28, 79, 79);
+    padding: 0px 4px;
+}

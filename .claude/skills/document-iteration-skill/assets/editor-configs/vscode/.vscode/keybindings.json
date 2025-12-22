@@ -1,0 +1,10 @@
+[
+  {
+    "key": "cmd+shift+h",
+    "command": "editor.action.insertSnippet",
+    "when": "editorTextFocus && editorLangId == markdown",
+    "args": {
+      "snippet": "==${TM_SELECTED_TEXT}($1)=="
+    }
+  }
+]

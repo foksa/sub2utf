@@ -1,0 +1,19 @@
+{
+  "mark": [
+    {
+      "regex": "•%%>",
+      "class": "claude-response-start",
+      "hide": false
+    },
+    {
+      "regex": "<%%•",
+      "class": "claude-response-end",
+      "hide": false
+    },
+    {
+      "regex": "%%",
+      "class": "user-response",
+      "hide": false
+    }
+  ]
+}

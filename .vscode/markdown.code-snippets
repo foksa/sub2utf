@@ -1,0 +1,47 @@
+{
+  "Comment": {
+    "prefix": "%%",
+    "body": "%% $1 %%",
+    "description": "Add a comment"
+  },
+  "Question": {
+    "prefix": "%%?",
+    "body": "%% ?: $1 %%",
+    "description": "Add a question"
+  },
+  "Token Comment": {
+    "prefix": "%%(",
+    "body": "%%($1) $2 %%",
+    "description": "Comment on a token"
+  },
+  "Highlight": {
+    "prefix": "==(",
+    "body": "==${TM_SELECTED_TEXT}($1)==",
+    "description": "Wrap selection with highlight token"
+  },
+  "Approved": {
+    "prefix": "%%a",
+    "body": "%% APPROVED %%",
+    "description": "Mark as approved"
+  },
+  "Revise": {
+    "prefix": "%%r",
+    "body": "%% REVISE %%",
+    "description": "Mark for revision"
+  },
+  "Info": {
+    "prefix": "%%i",
+    "body": "%% INFO: $1 %%",
+    "description": "Add actionable info"
+  },
+  "Note": {
+    "prefix": "%%n",
+    "body": "%% NOTE: $1 %%",
+    "description": "Add context note"
+  },
+  "Claude Response": {
+    "prefix": "%%>",
+    "body": "•%%> $1 <%%•",
+    "description": "Claude response marker (for manual insertion)"
+  }
+}
