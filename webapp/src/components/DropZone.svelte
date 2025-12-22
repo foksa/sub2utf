@@ -43,51 +43,47 @@
   }
 </script>
 
-<div
-  class="drop-zone box has-text-centered"
+<label
+  class="drop-zone"
   class:is-dragging={isDragging}
   ondragover={handleDragOver}
   ondragleave={handleDragLeave}
   ondrop={handleDrop}
-  role="button"
-  tabindex="0"
 >
-  <div class="file is-centered is-boxed is-large">
-    <label class="file-label">
-      <input
-        class="file-input"
-        type="file"
-        accept=".srt"
-        multiple
-        onchange={handleFileInput}
-      />
-      <span class="file-cta">
-        <span class="file-icon">
-          <i class="fas fa-upload"></i>
-        </span>
-        <span class="file-label-text">
-          Drop .srt files here or click to browse
-        </span>
-      </span>
-    </label>
-  </div>
-</div>
+  <input
+    class="file-input"
+    type="file"
+    accept=".srt"
+    multiple
+    onchange={handleFileInput}
+  />
+  <span class="icon is-large has-text-grey-light">
+    <span style="font-size: 2rem;">📁</span>
+  </span>
+  <p class="mt-2">Drop .srt files here or click to browse</p>
+</label>
 
 <style>
   .drop-zone {
-    border: 2px dashed #dbdbdb;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border: 2px dashed #4a4a4a;
+    border-radius: 6px;
     padding: 3rem;
-    transition: all 0.2s ease;
     cursor: pointer;
+    transition: all 0.2s ease;
+    background: transparent;
   }
 
   .drop-zone:hover,
   .drop-zone.is-dragging {
     border-color: #3273dc;
-    background-color: #f5f8ff;
+    background-color: rgba(50, 115, 220, 0.1);
   }
 
-  .file-label-text {
-    white-space: normal;
+  .file-input {
+    display: none;
   }
 </style>

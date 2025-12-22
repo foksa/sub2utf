@@ -16,8 +16,15 @@ export interface FileEntry {
 function createFilesStore() {
   const { subscribe, set, update } = writable<FileEntry[]>([]);
 
+  let currentEntries: FileEntry[] = [];
+  subscribe(entries => { currentEntries = entries; });
+
   return {
     subscribe,
+
+    getEntries() {
+      return currentEntries;
+    },
 
     addFiles(files: File[]) {
       update(entries => {

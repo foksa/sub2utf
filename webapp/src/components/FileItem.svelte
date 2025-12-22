@@ -1,12 +1,14 @@
 <script lang="ts">
   import type { FileEntry } from '../stores/files';
+  import EncodingSelect from './EncodingSelect.svelte';
 
   interface Props {
     entry: FileEntry;
     onremove: (id: string) => void;
+    onencoding: (id: string, encoding: string) => void;
   }
 
-  let { entry, onremove }: Props = $props();
+  let { entry, onremove, onencoding }: Props = $props();
 
   const statusIcons: Record<string, { icon: string; class: string }> = {
     pending: { icon: '⏳', class: 'has-text-grey' },
@@ -28,12 +30,15 @@
   <td>{entry.name}</td>
   <td>
     {#if entry.encoding}
-      <span class="tag" class:is-warning={entry.confidence < 0.7}>
-        {entry.encoding}
-        <span class="ml-1 has-text-grey-light">
+      <div class="is-flex is-align-items-center">
+        <EncodingSelect
+          value={entry.encoding}
+          onchange={(enc) => onencoding(entry.id, enc)}
+        />
+        <span class="ml-2 has-text-grey-light is-size-7" class:has-text-warning={entry.confidence < 0.7}>
           ({(entry.confidence * 100).toFixed(0)}%)
         </span>
-      </span>
+      </div>
     {:else}
       <span class="has-text-grey">—</span>
     {/if}

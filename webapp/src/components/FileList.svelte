@@ -5,6 +5,10 @@
   function handleRemove(id: string) {
     filesStore.removeEntry(id);
   }
+
+  function handleEncoding(id: string, encoding: string) {
+    filesStore.updateEntry(id, { encoding });
+  }
 </script>
 
 {#if $filesStore.length > 0}
@@ -21,7 +25,7 @@
       </thead>
       <tbody>
         {#each $filesStore as entry (entry.id)}
-          <FileItem {entry} onremove={handleRemove} />
+          <FileItem {entry} onremove={handleRemove} onencoding={handleEncoding} />
         {/each}
       </tbody>
     </table>
