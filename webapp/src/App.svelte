@@ -6,6 +6,7 @@
   import LanguageSelect from './components/LanguageSelect.svelte';
 
   let outputLanguage = $state('sr');
+  let isConverting = $state(false);
 
   async function handleFiles(files: File[]) {
     filesStore.addFiles(files);
@@ -20,11 +21,21 @@
 
       try {
         const result = await webAdapter.detectEncoding(file);
-        filesStore.updateEntry(entry.id, {
-          encoding: result.encoding,
-          confidence: result.confidence,
-          status: 'ready'
-        });
+
+        // Skip if already UTF-8
+        if (result.encoding.toUpperCase() === 'UTF-8') {
+          filesStore.updateEntry(entry.id, {
+            encoding: result.encoding,
+            confidence: result.confidence,
+            status: 'skipped'
+          });
+        } else {
+          filesStore.updateEntry(entry.id, {
+            encoding: result.encoding,
+            confidence: result.confidence,
+            status: 'ready'
+          });
+        }
       } catch (error) {
         filesStore.updateEntry(entry.id, {
           status: 'error',
@@ -33,6 +44,50 @@
       }
     }
   }
+
+  async function convertAll() {
+    const entries = filesStore.getEntries();
+    const toConvert = entries.filter(e => e.status === 'ready');
+
+    if (toConvert.length === 0) return;
+
+    isConverting = true;
+
+    for (const entry of toConvert) {
+      filesStore.updateEntry(entry.id, { status: 'processing' });
+
+      try {
+        const result = await webAdapter.convertFile(entry.file, entry.encoding);
+
+        if (result.success && result.content) {
+          filesStore.updateEntry(entry.id, {
+            status: 'done',
+            convertedContent: result.content
+          });
+
+          // Generate output filename with language suffix
+          const baseName = entry.name.replace(/\.srt$/i, '');
+          const outputName = `${baseName}.${outputLanguage}.srt`;
+
+          await webAdapter.saveFile(outputName, result.content);
+        } else {
+          filesStore.updateEntry(entry.id, {
+            status: 'error',
+            error: result.error || 'Conversion failed'
+          });
+        }
+      } catch (error) {
+        filesStore.updateEntry(entry.id, {
+          status: 'error',
+          error: error instanceof Error ? error.message : 'Conversion failed'
+        });
+      }
+    }
+
+    isConverting = false;
+  }
+
+  let readyCount = $derived(filesStore.getEntries().filter(e => e.status === 'ready').length);
 </script>
 
 <section class="section">
@@ -51,6 +106,23 @@
         <div class="is-flex is-align-items-center">
           <span class="mr-2">Output language:</span>
           <LanguageSelect value={outputLanguage} onchange={(lang) => outputLanguage = lang} />
+        </div>
+        <div class="buttons">
+          <button
+            class="button is-primary"
+            class:is-loading={isConverting}
+            disabled={readyCount === 0 || isConverting}
+            onclick={convertAll}
+          >
+            Convert {readyCount > 0 ? `(${readyCount})` : 'All'}
+          </button>
+          <button
+            class="button is-light"
+            onclick={() => filesStore.clear()}
+            disabled={isConverting}
+          >
+            Clear
+          </button>
         </div>
       </div>
     {/if}
