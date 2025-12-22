@@ -188,6 +188,60 @@ export default defineConfig(({ mode }) => ({
 }));
 ```
 
+## Settings Store
+
+User preferences persisted via localStorage. Works in both web and Tauri (webview).
+
+```typescript
+// src/stores/settings.ts
+
+interface Settings {
+  confidenceThreshold: number;  // Default: 0.7
+  encodingList: string[];       // Available encodings
+  languageList: string[];       // Available languages
+  defaultLanguage: string;      // Default: 'sr'
+}
+
+const DEFAULTS: Settings = {
+  confidenceThreshold: 0.7,
+  encodingList: ['UTF-8', 'Windows-1250', 'Windows-1251', 'ISO-8859-2', 'ISO-8859-5', 'KOI8-R'],
+  languageList: ['sr', 'hr', 'en', 'de', 'fr', 'es', 'it', 'pl', 'cs', 'ru'],
+  defaultLanguage: 'sr'
+};
+
+function createSettingsStore() {
+  const stored = localStorage.getItem('sub2utf-settings');
+  const initial = stored ? { ...DEFAULTS, ...JSON.parse(stored) } : DEFAULTS;
+
+  const { subscribe, set, update } = writable<Settings>(initial);
+
+  return {
+    subscribe,
+    update: (changes: Partial<Settings>) => {
+      update(s => {
+        const newSettings = { ...s, ...changes };
+        localStorage.setItem('sub2utf-settings', JSON.stringify(newSettings));
+        return newSettings;
+      });
+    },
+    reset: () => {
+      localStorage.removeItem('sub2utf-settings');
+      set(DEFAULTS);
+    }
+  };
+}
+
+export const settings = createSettingsStore();
+```
+
+### Why localStorage?
+
+- Works in both environments (browser and Tauri webview)
+- No additional adapter needed
+- Simple API, no async operations
+- Persists across sessions
+- If native storage needed later (sync, backup), can add Rust adapter
+
 ## File Structure
 
 ```
@@ -200,13 +254,17 @@ subtitle-converter/
 │   │   │   ├── web.ts        # Browser adapter
 │   │   │   └── index.ts      # Adapter selection
 │   │   ├── stores/
-│   │   │   └── files.ts      # Svelte stores
+│   │   │   ├── files.ts      # File list store
+│   │   │   └── settings.ts   # Settings store
 │   │   └── utils/
 │   │       └── encoding.ts   # Encoding helpers
 │   ├── components/
 │   │   ├── DropZone.svelte
 │   │   ├── FileList.svelte
-│   │   └── FileItem.svelte
+│   │   ├── FileItem.svelte
+│   │   ├── EncodingSelect.svelte
+│   │   ├── LanguageSelect.svelte
+│   │   └── Settings.svelte
 │   ├── App.svelte
 │   └── main.ts
 ├── src-tauri/                 # Rust backend (Tauri only)

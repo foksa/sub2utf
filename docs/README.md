@@ -24,6 +24,11 @@ Detailed design documents for implementation.
 - [ui-spec.md](ui-spec.md) — User interface design, components, states
 - [implementation-details.md](implementation-details.md) — Rust API, file structure, dependencies
 
+## Implementation
+
+- [implementation-plan-final.md](implementation-plan-final.md) — Step-by-step build guide (clean version)
+- [implementation-plan.md](implementation-plan.md) — Original with iteration markers (for reference)
+
 ## Roadmap
 
 - [roadmap.md](roadmap.md) — Version roadmap (v1, v2, v3 features)
@@ -49,4 +54,5 @@ Detailed design documents for implementation.
 | [decisions.md](planning/decisions.md) | What we decided and why |
 | [architecture.md](architecture.md) | How it's built |
 | [ui-spec.md](ui-spec.md) | How it looks |
+| [implementation-plan-final.md](implementation-plan-final.md) | How to build it |
 | [roadmap.md](roadmap.md) | What's next |

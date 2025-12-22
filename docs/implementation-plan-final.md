@@ -1,18 +1,13 @@
-# Implementation Plan
+# Implementation Plan (Final)
 
 Step-by-step build order for sub2utf. Each step produces a working checkpoint.
 
-> **Note: Web-First Pivot**
+> **Approach: Web-First**
 >
-> The original plan ([archive/implementation-plan-0.md](archive/implementation-plan-0.md)) started with Tauri + Rust. After reviewing [architecture.md](architecture.md), we noticed it already described an adapter pattern for both web and native builds - but the implementation plan only covered native.
->
-> In chat, we decided web-first is the better approach:
-> - Faster iteration (hot reload vs Rust compile times)
-> - No Rust learning curve for initial development
-> - Same Svelte + Bulma UI carries over to Tauri later
-> - File System Access API works in Chrome/Edge
->
-> New path: **v0.5** (web) → **v1.0** (wrap in Tauri for native)
+> Build web app first (v0.5), then wrap in Tauri (v1.0).
+> - Faster iteration with hot reload
+> - Same Svelte + Bulma UI carries over to native
+> - File System Access API provides native-like saving in Chrome/Edge
 
 ---
 
@@ -89,55 +84,6 @@ git commit -m "Add web adapter with jschardet encoding detection"
 - Create `src/stores/files.ts`
 - Svelte writable store for file list
 - File state: name, file object, encoding, confidence, status, error
-%% From our previous discussion, in tauri there is something like how confident encoding guess is> We need that also, we want to warn user if detection confidence is lower than certain threshold%%
-
-•%%>Added `confidence` to file state. jschardet returns 0-1 confidence. Will show warning indicator when < 0.7. <%%•
-
-%% That reminds me, we probably need to add some settings to our app, where we can configure confidence threshold, and maybe limit list of encodings and subtitle languages in dropdown%%
-
-•%%>Good idea — but settings adds complexity. For v0.5, hardcode sensible defaults. Add settings panel in v1/v2. Noting in roadmap. <%%•
-
-%% I wold like to do this part at leas in polish phase. Be done with FE before we move to native APP. Also, would not how we persist that data affect architecture (for example local storage in web vs however we decide to do it in tauri)%%
-
-•%%>Fair point — complete the web app properly before wrapping in Tauri. Adding settings to Phase 6 (Polish).
-
-For persistence, yes it affects architecture — we need another adapter:
-- **Web**: localStorage
-- **Tauri**: could use localStorage too (webview), or Rust file storage
-
-Simplest: use localStorage for both. It works in Tauri's webview. Only switch to Rust storage if we need native features (sync across devices, etc).
-
-Will add settings step to Phase 6 and update earlier responses about deferring. <%%•
-
-%% Web storage is ok then. Setting should be relatively simple so no need for features like sync%%
-
-•%%>Agreed — localStorage it is. <%%•
-
-%% Do we need to update also design and architecture documents? %%
-
-•%%>Yes, we should update:
-- **architecture.md**: Add settings store, mention localStorage
-- **ui-spec.md**: Add Settings component/panel UI
-- **File Checklist** in this doc: Add Settings.svelte
-
-Want me to do that now, or continue iterating on this plan first? <%%•
-
-%%
-Everything else seems Ok for now
-Update docs and lets continue
-Create implementation-plan-final, for easier following, cleaner version of this document
-%%
-
-•%%>On it. Will:
-1. Update architecture.md (settings store, localStorage)
-2. Update ui-spec.md (Settings component)
-3. Update File Checklist (add Settings.svelte)
-4. Create implementation-plan-final.md (clean version without iteration markers)
-
-Done:
-- architecture.md: Added Settings Store section with localStorage implementation
-- ui-spec.md: Added Settings Panel section with layout and field details
-- Created [implementation-plan-final.md](implementation-plan-final.md) — clean version ready for implementation <%%•
 
 **Checkpoint**: Store updates when files dropped
 
@@ -160,32 +106,24 @@ git commit -m "Add DropZone, FileList, FileItem components"
 
 ### Step 4.1: Wire up encoding detection
 - On file drop, call `adapter.detectEncoding()` for each file
-- Update store with detected encoding
+- Update store with detected encoding and confidence
 - Show encoding in FileItem
-%%Show encoding detect confidence? %%
+- Show warning icon when confidence < threshold (default 0.7)
 
-•%%>Yes — show warning icon (⚠️) next to encoding when confidence < 0.7. Tooltip: "Low confidence - verify encoding". <%%•
-
-**Checkpoint**: Dropped files show detected encoding
+**Checkpoint**: Dropped files show detected encoding with confidence indicator
 
 ### Step 4.2: EncodingSelect component
 - Create `src/components/EncodingSelect.svelte`
-- Dropdown with supported encodings
+- Dropdown with supported encodings (from settings)
 - Pre-select detected encoding
 - User can override
-%% Make list of dropdown item editable %%
-
-•%%>Yes — via settings panel in Phase 6. Hardcode defaults: UTF-8, Windows-1250, Windows-1251, ISO-8859-2, ISO-8859-5. <%%•
 
 **Checkpoint**: Can change encoding per file
 
 ### Step 4.3: LanguageSelect component
 - Create `src/components/LanguageSelect.svelte`
-- Dropdown with language codes (sr, hr, en, etc.)
-- Default to "sr"
-%% Make this list and default language also editable %%
-
-•%%>Yes — via settings in Phase 6. Hardcode defaults: sr, hr, en, de, fr, es, it, pl, cs, ru. Default: sr. <%%•
+- Dropdown with language codes (from settings)
+- Default to configured language (default: sr)
 
 **Checkpoint**: Can select output language
 
@@ -208,11 +146,8 @@ git commit -m "Integrate encoding detection, add selectors"
 
 ### Step 5.2: Save files
 - Call `adapter.saveFile()` for each converted file
-- In Chrome/Edge: saves next to original (File System Access API)
-- In other browsers: triggers download
-%% What for multiple files... do we trigger download for each of them all put them in archive and download them all%%
-
-•%%>Good question. Options: (1) trigger multiple downloads (annoying), (2) zip and download once. Recommend zip for 2+ files. Can use JSZip library. <%%•
+- Chrome/Edge: saves next to original (File System Access API)
+- Other browsers: use JSZip to bundle multiple files, trigger single download
 
 **Checkpoint**: Converted files are saved/downloaded
 
@@ -240,17 +175,19 @@ git commit -m "Complete conversion flow with error handling"
 ## Phase 6: Polish
 
 ### Step 6.1: UI refinement
-- Add app title/header
+- Add app title/header with settings gear icon
 - Style file list table
 - Add progress feedback during conversion
 - Clear file list button
 
 ### Step 6.2: Settings panel
 - Create `src/components/Settings.svelte`
-- Confidence threshold (default: 0.7)
-- Encoding list (editable)
-- Language list (editable)
-- Default language
+- Create `src/stores/settings.ts`
+- Settings:
+  - Confidence threshold (default: 0.7)
+  - Encoding list (editable)
+  - Language list (editable)
+  - Default language
 - Persist to localStorage
 
 **Checkpoint**: Settings saved and loaded on refresh
@@ -267,7 +204,7 @@ git commit -m "Complete conversion flow with error handling"
 ### Step 6.5: Git checkpoint
 ```bash
 git add .
-git commit -m "UI polish and browser compatibility"
+git commit -m "UI polish, settings panel, browser compatibility"
 ```
 
 ---
@@ -340,7 +277,8 @@ sub2utf/
 │   │       ├── web.ts
 │   │       └── index.ts
 │   └── stores/
-│       └── files.ts
+│       ├── files.ts
+│       └── settings.ts
 ├── docs/
 │   └── (planning docs)
 ├── package.json

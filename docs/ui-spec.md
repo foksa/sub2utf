@@ -139,3 +139,71 @@ Bulma primary button. Disabled until files are added.
 - Keyboard navigation for all controls
 - Focus indicators on interactive elements
 - Screen reader labels for status icons
+
+## Settings Panel
+
+Modal or slide-out panel for user preferences.
+
+### Layout
+
+```
+┌────────────────────────────────────────────────────────┐
+│  Settings                                         [×]  │
+├────────────────────────────────────────────────────────┤
+│                                                        │
+│  Confidence Threshold                                  │
+│  ┌─────────────────────────────────────────────────┐   │
+│  │ ○───────────────●──────────────○  0.7           │   │
+│  └─────────────────────────────────────────────────┘   │
+│  Show warning when detection confidence below this     │
+│                                                        │
+│  ─────────────────────────────────────────────────     │
+│                                                        │
+│  Default Language                                      │
+│  ┌──────────────┐                                      │
+│  │ sr        ▼  │                                      │
+│  └──────────────┘                                      │
+│                                                        │
+│  ─────────────────────────────────────────────────     │
+│                                                        │
+│  Available Languages                                   │
+│  ┌──────────────────────────────────────────────┐      │
+│  │ sr, hr, en, de, fr, es, it, pl, cs, ru       │      │
+│  └──────────────────────────────────────────────┘      │
+│  Comma-separated language codes                        │
+│                                                        │
+│  ─────────────────────────────────────────────────     │
+│                                                        │
+│  Available Encodings                                   │
+│  ┌──────────────────────────────────────────────┐      │
+│  │ UTF-8, Windows-1250, Windows-1251, ...       │      │
+│  └──────────────────────────────────────────────┘      │
+│  Comma-separated encoding names                        │
+│                                                        │
+│  ─────────────────────────────────────────────────     │
+│                                                        │
+│  [Reset to Defaults]                        [Save]     │
+│                                                        │
+└────────────────────────────────────────────────────────┘
+```
+
+### Settings Fields
+
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| Confidence Threshold | Slider (0.1-1.0) | 0.7 | Warning shown when detection confidence below this |
+| Default Language | Dropdown | sr | Pre-selected language for new files |
+| Available Languages | Text input | sr, hr, en, de, fr, es, it, pl, cs, ru | Languages shown in dropdown |
+| Available Encodings | Text input | UTF-8, Windows-1250, Windows-1251, ISO-8859-2, ISO-8859-5, KOI8-R | Encodings shown in dropdown |
+
+### Interactions
+
+1. Click gear icon (⚙️) in header to open settings
+2. Adjust values as needed
+3. "Save" persists to localStorage and closes panel
+4. "Reset to Defaults" restores factory settings
+5. Settings apply immediately to new files; existing files keep their selections
+
+### Persistence
+
+Settings stored in `localStorage` under key `sub2utf-settings`. Works in both web and Tauri webview.
