@@ -1,4 +1,8 @@
 {
+  "files.exclude": {
+    ".vscode": true,
+    ".obsidian": true
+  },
   "editor.tokenColorCustomizations": {
     "textMateRules": [
       {

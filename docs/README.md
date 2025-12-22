@@ -1,6 +1,6 @@
 # Documentation
 
-Documentation for the Subtitle Encoding Converter project.
+Documentation for **sub2utf** — a subtitle encoding converter for Plex.
 
 ## Planning
 
@@ -9,6 +9,12 @@ Documents from the initial planning and requirements gathering phase.
 - [problem-description.md](planning/problem-description.md) — Original problem statement and requirements discussion
 - [tech-spec.md](planning/tech-spec.md) — Technical specification with iterative feedback
 - [decisions.md](planning/decisions.md) — Summary of all key decisions
+
+## Archive
+
+Historical versions of documents (before iteration/pivots).
+
+- [archive/](archive/) — Original proposals and superseded plans
 
 ## Design
 

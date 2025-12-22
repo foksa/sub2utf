@@ -4,7 +4,7 @@ Step-by-step build order for sub2utf. Each step produces a working checkpoint.
 
 > **Note: Web-First Pivot**
 >
-> The original plan ([archive/implementation-plan-0.md](archive/implementation-plan-0.md)) started with Tauri + Rust. After reviewing [architecture.md](architecture.md), we noticed it already described an adapter pattern for both web and native builds - but the implementation plan only covered native.
+> The original plan ([implementation-plan-0.md](implementation-plan-0.md)) started with Tauri + Rust. After reviewing [architecture.md](architecture.md), we noticed it already described an adapter pattern for both web and native builds - but the implementation plan only covered native.
 >
 > In chat, we decided web-first is the better approach:
 > - Faster iteration (hot reload vs Rust compile times)
@@ -89,7 +89,6 @@ git commit -m "Add web adapter with jschardet encoding detection"
 - Create `src/stores/files.ts`
 - Svelte writable store for file list
 - File state: name, file object, encoding, status, error
-%% From our previous discussion, in tauri there is something like how confident encoding guess is> We need that also, we want to warn user if detection confidence is lower than certain treshold%%
 
 **Checkpoint**: Store updates when files dropped
 

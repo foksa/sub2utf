@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "planning/tech-spec-0.md",
+                "file": "archive/implementation-plan-1.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "tech-spec-0"
+              "title": "implementation-plan-1"
             }
           }
         ]
@@ -183,10 +183,15 @@
   "active": "ef72eb683e21a485",
   "lastOpenFiles": [
     "implementation-plan.md",
+    "archive/implementation-plan-1.md",
+    "archive/tech-spec-0.md",
+    "archive/implementation-plan-0.md",
+    "archive",
+    "architecture.md",
+    "implementation-plan-0.md",
+    "planning/tech-spec-0.md",
     "planning/tech-spec-initals-state.md",
     "README.md",
-    "planning/tech-spec-0.md",
-    "architecture.md",
     "planning/problem-description.md",
     "planning/decisions.md",
     "tech-spec.md",
