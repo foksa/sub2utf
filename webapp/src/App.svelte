@@ -1,3 +1,13 @@
+<!--
+  App.svelte - Main application component
+
+  Orchestrates the subtitle conversion workflow:
+  1. User drops/selects files via DropZone
+  2. Encoding is auto-detected for each file
+  3. User can override encoding if needed
+  4. User clicks Convert to process all ready files
+  5. Converted files are saved with language suffix (e.g., movie.sr.srt)
+-->
 <script lang="ts">
   import { filesStore } from './stores/files';
   import { settingsStore } from './stores/settings';
@@ -7,16 +17,22 @@
   import LanguageSelect from './components/LanguageSelect.svelte';
   import Settings from './components/Settings.svelte';
 
+  // UI state
   let outputLanguage = $state($settingsStore.defaultLanguage);
   let isConverting = $state(false);
   let showSettings = $state(false);
 
+  // Check for File System Access API (Chrome/Edge only)
   const hasFileSystemAccess = typeof window !== 'undefined' && 'showSaveFilePicker' in window;
 
+  /**
+   * Handle files dropped or selected by user.
+   * Adds files to store and runs encoding detection.
+   */
   async function handleFiles(files: File[]) {
     filesStore.addFiles(files);
 
-    // Detect encoding for each file
+    // Detect encoding for each file sequentially
     for (const file of files) {
       const entries = filesStore.getEntries();
       const entry = entries.find(e => e.file === file);
@@ -27,7 +43,7 @@
       try {
         const result = await webAdapter.detectEncoding(file);
 
-        // Skip if already UTF-8
+        // Skip files already in UTF-8
         if (result.encoding.toUpperCase() === 'UTF-8') {
           filesStore.updateEntry(entry.id, {
             encoding: result.encoding,
@@ -50,6 +66,10 @@
     }
   }
 
+  /**
+   * Convert all files with 'ready' status to UTF-8.
+   * Saves each file with the selected language suffix.
+   */
   async function convertAll() {
     const entries = filesStore.getEntries();
     const toConvert = entries.filter(e => e.status === 'ready');
@@ -70,7 +90,7 @@
             convertedContent: result.content
           });
 
-          // Generate output filename with language suffix
+          // Generate output filename: movie.srt → movie.sr.srt
           const baseName = entry.name.replace(/\.srt$/i, '');
           const outputName = `${baseName}.${outputLanguage}.srt`;
 
@@ -92,6 +112,7 @@
     isConverting = false;
   }
 
+  // Count of files ready for conversion (for button label)
   let readyCount = $derived(filesStore.getEntries().filter(e => e.status === 'ready').length);
 </script>
 
