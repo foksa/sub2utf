@@ -230,3 +230,7 @@ Create README.MD in this folder where you link all the files and write brief des
 %% This will be open source project, so we will need to add this to github also, but let's discuss that in chat, still need some nice name for it :) %%
 
 •%%>Sounds good — let's brainstorm names in chat. Some quick ideas: SubFix, PlexSub, SubShift, Titlify, SRTify... <%%•
+
+%% We discussed in chat and settled on: sub2utf %%
+
+•%%>Confirmed — name is **sub2utf**. Checked GitHub (available) and Google (no existing tool). Ready to create repo. <%%•
