@@ -1,12 +1,17 @@
 <script lang="ts">
   import { filesStore } from './stores/files';
+  import { settingsStore } from './stores/settings';
   import { webAdapter } from './lib/adapters';
   import DropZone from './components/DropZone.svelte';
   import FileList from './components/FileList.svelte';
   import LanguageSelect from './components/LanguageSelect.svelte';
+  import Settings from './components/Settings.svelte';
 
-  let outputLanguage = $state('sr');
+  let outputLanguage = $state($settingsStore.defaultLanguage);
   let isConverting = $state(false);
+  let showSettings = $state(false);
+
+  const hasFileSystemAccess = typeof window !== 'undefined' && 'showSaveFilePicker' in window;
 
   async function handleFiles(files: File[]) {
     filesStore.addFiles(files);
@@ -92,8 +97,22 @@
 
 <section class="section">
   <div class="container">
-    <h1 class="title">sub2utf</h1>
-    <p class="subtitle">Convert subtitle files to UTF-8 for Plex</p>
+    <div class="is-flex is-justify-content-space-between is-align-items-center mb-4">
+      <div>
+        <h1 class="title mb-1">sub2utf</h1>
+        <p class="subtitle mb-0">Convert subtitle files to UTF-8 for Plex</p>
+      </div>
+      <button class="button is-ghost" onclick={() => showSettings = true} title="Settings">
+        <span style="font-size: 1.5rem;">⚙️</span>
+      </button>
+    </div>
+
+    {#if !hasFileSystemAccess}
+      <div class="notification is-warning is-light">
+        <strong>Note:</strong> Your browser doesn't support direct file saving. Files will be downloaded instead.
+        For the best experience, use Chrome or Edge.
+      </div>
+    {/if}
 
     <DropZone onfiles={handleFiles} />
 
@@ -128,3 +147,7 @@
     {/if}
   </div>
 </section>
+
+{#if showSettings}
+  <Settings onclose={() => showSettings = false} />
+{/if}
