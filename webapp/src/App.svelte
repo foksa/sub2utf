@@ -1,16 +1,11 @@
 <script lang="ts">
-  import { webAdapter } from './lib/adapters';
+  import { filesStore } from './stores/files';
+  import DropZone from './components/DropZone.svelte';
+  import FileList from './components/FileList.svelte';
 
-  let encodingResult = '';
-
-  async function testEncoding(event: Event) {
-    const input = event.target as HTMLInputElement;
-    const file = input.files?.[0];
-    if (!file) return;
-
-    const result = await webAdapter.detectEncoding(file);
-    encodingResult = `Encoding: ${result.encoding}, Confidence: ${(result.confidence * 100).toFixed(1)}%`;
-    console.log('Encoding detection result:', result);
+  function handleFiles(files: File[]) {
+    filesStore.addFiles(files);
+    console.log('Files added:', files.map(f => f.name));
   }
 </script>
 
@@ -19,17 +14,10 @@
     <h1 class="title">sub2utf</h1>
     <p class="subtitle">Convert subtitle files to UTF-8 for Plex</p>
 
-    <div class="field">
-      <label class="label">Test Encoding Detection</label>
-      <div class="control">
-        <input class="input" type="file" accept=".srt" onchange={testEncoding} />
-      </div>
-    </div>
+    <DropZone onfiles={handleFiles} />
 
-    {#if encodingResult}
-      <div class="notification is-info">
-        {encodingResult}
-      </div>
-    {/if}
+    <div class="mt-5">
+      <FileList />
+    </div>
   </div>
 </section>
