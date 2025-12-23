@@ -23,10 +23,10 @@
     "vite-plugin-wasm": "^3.5.0"
   },
   "dependencies": {
+    "@picocss/pico": "^2.1.1",
     "@tauri-apps/api": "^2.9.1",
     "@tauri-apps/plugin-dialog": "^2.4.2",
     "@tauri-apps/plugin-fs": "^2.4.4",
-    "bulma": "^1.0.4",
     "chardetng-wasm": "^1.0.2"
   }
 }

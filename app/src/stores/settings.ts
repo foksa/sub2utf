@@ -17,6 +17,8 @@ export interface Settings {
   encodings: string[];
   /** List of languages available in dropdown (editable by user) */
   languages: LanguageOption[];
+  /** Prompt for save location instead of saving next to original (Tauri only) */
+  promptForSaveLocation: boolean;
 }
 
 const STORAGE_KEY = 'sub2utf-settings';
@@ -48,7 +50,8 @@ const defaultSettings: Settings = {
     { code: 'cs', name: 'Czech' },
     { code: 'sk', name: 'Slovak' },
     { code: 'hu', name: 'Hungarian' }
-  ]
+  ],
+  promptForSaveLocation: false
 };
 
 /** Load settings from localStorage, falling back to defaults */

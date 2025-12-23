@@ -97,10 +97,8 @@
     onchange={handleFileInput}
     disabled={hasNativeFileOps}
   />
-  <span class="icon is-large has-text-grey-light">
-    <span style="font-size: 2rem;">📁</span>
-  </span>
-  <p class="mt-2">Drop .srt files here or click to browse</p>
+  <span class="icon">📁</span>
+  <p>Drop .srt files here or click to browse</p>
 </label>
 
 <style>
@@ -109,8 +107,8 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    border: 2px dashed #4a4a4a;
-    border-radius: 6px;
+    border: 2px dashed var(--pico-muted-border-color);
+    border-radius: var(--pico-border-radius);
     padding: 3rem;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -119,8 +117,18 @@
 
   .drop-zone:hover,
   .drop-zone.is-dragging {
-    border-color: #3273dc;
-    background-color: rgba(50, 115, 220, 0.1);
+    border-color: var(--pico-primary);
+    background-color: var(--pico-primary-focus);
+  }
+
+  .drop-zone p {
+    margin: 0;
+    color: var(--pico-muted-color);
+  }
+
+  .icon {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
   }
 
   .file-input {

@@ -14,13 +14,13 @@
   let { entry, onremove, onencoding, onlanguage }: Props = $props();
 
   const statusIcons: Record<string, { icon: string; class: string }> = {
-    pending: { icon: '⏳', class: 'has-text-grey' },
-    detecting: { icon: '🔍', class: 'has-text-info' },
-    ready: { icon: '✓', class: 'has-text-success' },
-    processing: { icon: '⚙️', class: 'has-text-info' },
-    done: { icon: '✅', class: 'has-text-success' },
-    skipped: { icon: '⏭️', class: 'has-text-warning' },
-    error: { icon: '❌', class: 'has-text-danger' }
+    pending: { icon: '⏳', class: 'muted' },
+    detecting: { icon: '🔍', class: 'info' },
+    ready: { icon: '✓', class: 'success' },
+    processing: { icon: '⚙️', class: 'info' },
+    done: { icon: '✅', class: 'success' },
+    skipped: { icon: '⏭️', class: 'warning' },
+    error: { icon: '❌', class: 'danger' }
   };
 
   let statusInfo = $derived(statusIcons[entry.status] || statusIcons.pending);
@@ -47,10 +47,10 @@
     <span class={statusInfo.class}>{statusInfo.icon}</span>
     <span class="filename" title={entry.name}>{entry.name}</span>
     <button
-      class="delete is-small"
+      class="remove-btn"
       onclick={() => onremove(entry.id)}
       title="Remove file"
-    ></button>
+    >×</button>
   </div>
   <div class="file-controls">
     <div class="control-group">
@@ -61,10 +61,10 @@
           onchange={(enc) => onencoding(entry.id, enc)}
         />
         {#if encodingMismatch}
-          <span class="has-text-warning" title={mismatchTooltip}>⚠️</span>
+          <span class="warning" title={mismatchTooltip}>⚠️</span>
         {/if}
       {:else}
-        <span class="has-text-grey">detecting...</span>
+        <span class="muted">detecting...</span>
       {/if}
     </div>
     <div class="control-group">
@@ -75,9 +75,9 @@
       />
     </div>
     <div class="control-group">
-      <span class="status-text is-capitalized">{entry.status}</span>
+      <span class="status-text">{entry.status}</span>
       {#if entry.error}
-        <span class="has-text-danger" title={entry.error}>⚠</span>
+        <span class="danger" title={entry.error}>⚠</span>
       {/if}
     </div>
   </div>
@@ -86,7 +86,7 @@
 <style>
   .file-item {
     padding: 0.75rem;
-    border-bottom: 1px solid var(--bulma-border);
+    border-bottom: 1px solid var(--pico-muted-border-color);
   }
 
   .file-item:last-child {
@@ -108,6 +108,21 @@
     font-weight: 500;
   }
 
+  .remove-btn {
+    background: none;
+    border: none;
+    font-size: 1.25rem;
+    cursor: pointer;
+    padding: 0 0.5rem;
+    color: var(--pico-muted-color);
+    width: auto;
+    margin: 0;
+  }
+
+  .remove-btn:hover {
+    color: var(--pico-del-color);
+  }
+
   .file-controls {
     display: flex;
     align-items: center;
@@ -122,11 +137,18 @@
   }
 
   .control-label {
-    color: var(--bulma-text-weak);
+    color: var(--pico-muted-color);
     font-size: 0.875rem;
   }
 
   .status-text {
     font-size: 0.875rem;
+    text-transform: capitalize;
   }
+
+  .muted { color: var(--pico-muted-color); }
+  .info { color: var(--pico-primary); }
+  .success { color: var(--pico-ins-color); }
+  .warning { color: var(--pico-mark-background-color); }
+  .danger { color: var(--pico-del-color); }
 </style>

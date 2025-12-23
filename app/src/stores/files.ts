@@ -3,8 +3,9 @@
  *
  * File lifecycle: pending → detecting → ready/skipped/error → processing → done/error
  */
-import { writable } from 'svelte/store';
+import { writable, get } from 'svelte/store';
 import { adapter } from '../lib/adapters';
+import { settingsStore } from './settings';
 
 /**
  * Status of a file in the conversion pipeline.
@@ -158,6 +159,32 @@ function createFilesStore() {
           const result = await adapter.convertFile(entry.file, entry.encoding);
 
           if (result.success && result.content) {
+            // Generate output filename: movie.srt → movie.sr.srt
+            const baseName = entry.name.replace(/\.srt$/i, '');
+            const outputName = `${baseName}.${entry.language}.srt`;
+
+            const settings = get(settingsStore);
+
+            // Check if we should prompt for save location (Tauri only)
+            if (settings.promptForSaveLocation && adapter.saveFileWithDialog) {
+              const saved = await adapter.saveFileWithDialog(outputName, result.content);
+              if (!saved) {
+                // User cancelled - reset to ready state
+                update(entries =>
+                  entries.map(e => e.id === entry.id ? { ...e, status: 'ready' as FileStatus } : e)
+                );
+                continue;
+              }
+            } else {
+              // Auto-save next to original or just use filename
+              if (entry.path) {
+                const dir = entry.path.substring(0, entry.path.lastIndexOf('/') + 1);
+                await adapter.saveFile(dir + outputName, result.content);
+              } else {
+                await adapter.saveFile(outputName, result.content);
+              }
+            }
+
             update(entries =>
               entries.map(e => e.id === entry.id ? {
                 ...e,
@@ -165,18 +192,6 @@ function createFilesStore() {
                 convertedContent: result.content
               } : e)
             );
-
-            // Generate output filename: movie.srt → movie.sr.srt
-            const baseName = entry.name.replace(/\.srt$/i, '');
-            const outputName = `${baseName}.${entry.language}.srt`;
-
-            // If we have the original path, save next to it; otherwise just use filename
-            if (entry.path) {
-              const dir = entry.path.substring(0, entry.path.lastIndexOf('/') + 1);
-              await adapter.saveFile(dir + outputName, result.content);
-            } else {
-              await adapter.saveFile(outputName, result.content);
-            }
           } else {
             update(entries =>
               entries.map(e => e.id === entry.id ? {

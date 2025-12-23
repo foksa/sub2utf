@@ -2,7 +2,7 @@
 
 Future enhancements for the Subtitle Encoding Converter.
 
-## v0.5 — Web App
+## v0.5 — Web App (Complete)
 
 Web-first implementation:
 - Drag-and-drop `.srt` files
@@ -13,24 +13,23 @@ Web-first implementation:
 - Convert to UTF-8
 - Download converted files (all browsers)
 - Configurable settings (encodings, languages) with localStorage persistence
-- Svelte 5 + Bulma frontend
+- Svelte 5 + Pico CSS frontend
 
-## v1.0 — Native App (Current)
+## v1.0 — Native App (Complete)
 
 Tauri desktop app with native file system access:
-- Same Svelte + Bulma UI
+- Same Svelte + Pico CSS UI
 - Tauri v2 + Rust backend
 - Native drag-drop and file dialog with full path support
-- Save converted files next to originals (no dialogs)
+- Save converted files next to originals (or prompt for location)
 - chardetng (native Rust) for encoding detection
 - encoding_rs for UTF-8 conversion
 - macOS app bundle (10MB)
+- Custom app icon
 
 ### Future Improvements
 - JSZip bundling for multiple file downloads in web version
 - Completion summary after batch conversion
-- Evaluate lighter CSS alternatives to Bulma (Pico CSS, Open Props, custom CSS)
-- Custom app icons
 - Add Rust caching to CI workflow (Swatinem/rust-cache) for faster builds
 
 ### Code Signing
