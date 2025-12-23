@@ -2,7 +2,7 @@
 
 Future enhancements for the Subtitle Encoding Converter.
 
-## v0.5 — Web App (Current)
+## v0.5 — Web App
 
 Web-first implementation:
 - Drag-and-drop `.srt` files
@@ -11,23 +11,27 @@ Web-first implementation:
 - Language-encoding mismatch warnings
 - Per-file language selector — Plex-compatible naming (`movie.{lang}.srt`)
 - Convert to UTF-8
-- File System Access API for Chrome/Edge (save next to original)
-- Download fallback for Safari/Firefox
+- Download converted files (all browsers)
 - Configurable settings (encodings, languages) with localStorage persistence
 - Svelte 5 + Bulma frontend
 
-### Future Web Improvements
-- JSZip bundling for multiple file downloads in Safari/Firefox
+## v1.0 — Native App (Current)
+
+Tauri desktop app with native file system access:
+- Same Svelte + Bulma UI
+- Tauri v2 + Rust backend
+- Native drag-drop and file dialog with full path support
+- Save converted files next to originals (no dialogs)
+- chardetng (native Rust) for encoding detection
+- encoding_rs for UTF-8 conversion
+- macOS app bundle (10MB)
+
+### Future Improvements
+- JSZip bundling for multiple file downloads in web version
 - Completion summary after batch conversion
 - Evaluate lighter CSS alternatives to Bulma (Pico CSS, Open Props, custom CSS)
-
-## v1.0 — Native App (Tauri)
-
-Wrap web app in Tauri for native experience:
-- Same Svelte + Bulma UI
-- Tauri + Rust backend
-- Native file system access (all platforms) — save next to original without dialogs
-- Same chardetng detection (native Rust instead of WASM)
+- Custom app icons
+- Windows and Linux builds
 
 ## v2.0 — Batch Processing
 
@@ -63,7 +67,6 @@ Wrap web app in Tauri for native experience:
 
 ## Future Ideas
 
-- Web app version (same Svelte UI, browser-based)
 - CLI version for scripting
 - Integration with subtitle download sites
 - Bulk rename tool for Plex naming
