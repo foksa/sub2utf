@@ -1,5 +1,9 @@
 <script lang="ts">
   import { settingsStore } from '../stores/settings';
+  import allEncodings from '../data/encodings.json';
+
+  // Lookup map for encoding names
+  const encodingNames = new Map(allEncodings.map(e => [e.code, e.name]));
 
   interface Props {
     value: string;
@@ -17,7 +21,7 @@
 <div class="select is-small">
   <select {value} onchange={handleChange}>
     {#each $settingsStore.encodings as enc}
-      <option value={enc}>{enc}</option>
+      <option value={enc}>{encodingNames.get(enc) || enc} ({enc})</option>
     {/each}
   </select>
 </div>

@@ -114,15 +114,15 @@
         <label class="label">Encodings ({selectedEncodings.size} selected)</label>
         <div class="checkbox-list">
           {#each allEncodings as enc}
-            {@const isLastSelected = selectedEncodings.has(enc) && selectedEncodings.size === 1}
+            {@const isLastSelected = selectedEncodings.has(enc.code) && selectedEncodings.size === 1}
             <label class="checkbox" class:is-disabled={isLastSelected}>
               <input
                 type="checkbox"
-                checked={selectedEncodings.has(enc)}
+                checked={selectedEncodings.has(enc.code)}
                 disabled={isLastSelected}
-                onchange={() => toggleEncoding(enc)}
+                onchange={() => toggleEncoding(enc.code)}
               />
-              {enc}
+              {enc.name} ({enc.code})
             </label>
           {/each}
         </div>
