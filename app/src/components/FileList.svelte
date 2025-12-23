@@ -28,12 +28,17 @@
     {/each}
   </div>
 {:else}
-  <p class="has-text-grey has-text-centered">No files added yet</p>
+  <p class="empty-text">No files added yet</p>
 {/if}
 
 <style>
   .file-list {
-    border: 1px solid var(--bulma-border);
-    border-radius: 4px;
+    border: 1px solid var(--pico-muted-border-color);
+    border-radius: var(--pico-border-radius);
+  }
+
+  .empty-text {
+    text-align: center;
+    color: var(--pico-muted-color);
   }
 </style>

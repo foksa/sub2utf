@@ -17,7 +17,7 @@
 <div class="checkbox-list" style="grid-template-columns: repeat({columns}, 1fr)">
   {#each items as item}
     {@const isLastSelected = selected.has(item.code) && selected.size === 1}
-    <label class="checkbox" class:is-disabled={isLastSelected} title="{item.name} ({item.code})">
+    <label class="checkbox-item" class:is-disabled={isLastSelected} title="{item.name} ({item.code})">
       <input
         type="checkbox"
         checked={selected.has(item.code)}
@@ -31,30 +31,35 @@
 
 <style>
   .checkbox-list {
-    max-height: 150px;
-    overflow-y: auto;
-    border: 1px solid #363636;
-    border-radius: 4px;
+    border: 1px solid var(--pico-muted-border-color);
+    border-radius: var(--pico-border-radius);
     padding: 0.5rem;
     display: grid;
     gap: 0.25rem;
   }
 
-  .checkbox-list .checkbox {
+  .checkbox-item {
     display: flex;
     align-items: center;
-    gap: 0.25rem;
+    gap: 0.5rem;
     font-size: 0.875rem;
     min-width: 0;
+    cursor: pointer;
   }
 
-  .checkbox-list .checkbox-text {
+  .checkbox-item input[type="checkbox"] {
+    margin: 0;
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+
+  .checkbox-text {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
 
-  .checkbox-list .checkbox.is-disabled {
+  .checkbox-item.is-disabled {
     opacity: 0.5;
     cursor: not-allowed;
   }

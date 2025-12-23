@@ -67,7 +67,7 @@ xcode-select --install
 
 ## Tech Stack
 
-- **Frontend**: Svelte 5 + Bulma
+- **Frontend**: Svelte 5 + Pico CSS
 - **Native Backend**: Tauri v2 + Rust
 - **Encoding Detection**: chardetng (Mozilla's Firefox detector)
 - **Build**: Vite

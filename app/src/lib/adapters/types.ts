@@ -59,4 +59,12 @@ export interface FileAdapter {
    * Returns unlisten function
    */
   setupDragDrop?(onDrop: (result: FileReadResult) => void): Promise<() => void>;
+
+  /**
+   * Show save file dialog and save content (Tauri only)
+   * @param defaultName - suggested filename
+   * @param content - content to save
+   * @returns true if saved, false if cancelled
+   */
+  saveFileWithDialog?(defaultName: string, content: string): Promise<boolean>;
 }

@@ -18,10 +18,17 @@
   }
 </script>
 
-<div class="select is-small">
-  <select {value} onchange={handleChange}>
-    {#each $settingsStore.encodings as enc}
-      <option value={enc}>{encodingNames.get(enc) || enc} ({enc})</option>
-    {/each}
-  </select>
-</div>
+<select class="inline-select" {value} onchange={handleChange}>
+  {#each $settingsStore.encodings as enc}
+    <option value={enc}>{encodingNames.get(enc) || enc} ({enc})</option>
+  {/each}
+</select>
+
+<style>
+  .inline-select {
+    width: auto;
+    margin: 0;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+  }
+</style>

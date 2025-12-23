@@ -94,4 +94,18 @@ export const tauriAdapter: FileAdapter = {
       }
     });
   },
+
+  async saveFileWithDialog(defaultName: string, content: string): Promise<boolean> {
+    const { save } = await import('@tauri-apps/plugin-dialog');
+
+    const path = await save({
+      defaultPath: defaultName,
+      filters: [{ name: 'Subtitles', extensions: ['srt'] }],
+    });
+
+    if (!path) return false;
+
+    await invoke('save_file', { path, content });
+    return true;
+  },
 };
