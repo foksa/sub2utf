@@ -2,6 +2,7 @@
   import { settingsStore, type LanguageOption } from '../stores/settings';
   import allEncodings from '../data/encodings.json';
   import allLanguages from '../data/languages.json';
+  import CheckboxList from './CheckboxList.svelte';
 
   interface Props {
     onclose: () => void;
@@ -92,40 +93,23 @@
       <hr />
 
       <div class="field">
-        <label class="label">Languages ({selectedLanguages.size} selected)</label>
-        <div class="checkbox-list">
-          {#each allLanguages as lang}
-            {@const isLastSelected = selectedLanguages.has(lang.code) && selectedLanguages.size === 1}
-            <label class="checkbox" class:is-disabled={isLastSelected}>
-              <input
-                type="checkbox"
-                checked={selectedLanguages.has(lang.code)}
-                disabled={isLastSelected}
-                onchange={() => toggleLanguage(lang.code)}
-              />
-              {lang.name} ({lang.code})
-            </label>
-          {/each}
-        </div>
+        <span class="label">Languages ({selectedLanguages.size} selected)</span>
+        <CheckboxList
+          items={allLanguages}
+          selected={selectedLanguages}
+          ontoggle={toggleLanguage}
+        />
         <p class="help">At least one language must be selected</p>
       </div>
 
       <div class="field">
-        <label class="label">Encodings ({selectedEncodings.size} selected)</label>
-        <div class="checkbox-list">
-          {#each allEncodings as enc}
-            {@const isLastSelected = selectedEncodings.has(enc.code) && selectedEncodings.size === 1}
-            <label class="checkbox" class:is-disabled={isLastSelected}>
-              <input
-                type="checkbox"
-                checked={selectedEncodings.has(enc.code)}
-                disabled={isLastSelected}
-                onchange={() => toggleEncoding(enc.code)}
-              />
-              {enc.name} ({enc.code})
-            </label>
-          {/each}
-        </div>
+        <span class="label">Encodings ({selectedEncodings.size} selected)</span>
+        <CheckboxList
+          items={allEncodings}
+          selected={selectedEncodings}
+          ontoggle={toggleEncoding}
+          columns={2}
+        />
         <p class="help">At least one encoding must be selected</p>
       </div>
     </section>
@@ -142,29 +126,5 @@
 <style>
   .modal-card-foot {
     justify-content: space-between;
-  }
-
-  .checkbox-list {
-    max-height: 150px;
-    overflow-y: auto;
-    border: 1px solid #363636;
-    border-radius: 4px;
-    padding: 0.5rem;
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-    gap: 0.25rem;
-  }
-
-  .checkbox-list .checkbox {
-    display: flex;
-    align-items: center;
-    gap: 0.25rem;
-    font-size: 0.875rem;
-    white-space: nowrap;
-  }
-
-  .checkbox-list .checkbox.is-disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
   }
 </style>
