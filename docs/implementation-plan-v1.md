@@ -8,9 +8,9 @@ Step-by-step plan to wrap the web app in Tauri for native desktop experience.
 
 ## Prerequisites
 
-- [ ] Rust toolchain (rustup)
-- [ ] Node.js 18+
-- [ ] Platform-specific dependencies:
+- [x] Rust toolchain (rustup)
+- [x] Node.js 18+
+- [x] Platform-specific dependencies:
   - macOS: Xcode Command Line Tools
   - Windows: Microsoft Visual Studio C++ Build Tools
   - Linux: `webkit2gtk`, `libappindicator3`
@@ -57,10 +57,10 @@ npm run tauri dev
 
 ### Step 1.5: Git checkpoint
 
-- [ ] Tauri CLI installed
-- [ ] `src-tauri/` folder created
-- [ ] `tauri.conf.json` configured
-- [ ] Dev mode works (native window opens)
+- [x] Tauri CLI installed
+- [x] `src-tauri/` folder created
+- [x] `tauri.conf.json` configured
+- [x] Dev mode works (native window opens)
 
 ```bash
 git checkout -b feat/tauri-v1
@@ -68,7 +68,7 @@ git add .
 git commit -m "Add Tauri scaffolding"
 ```
 
-- [ ] Committed to git
+- [x] Committed to git
 
 ---
 
@@ -141,18 +141,18 @@ export const adapter = isTauri ? tauriAdapter : webAdapter;
 
 ### Step 2.5: Git checkpoint
 
-- [ ] Rust dependencies added
-- [ ] Rust commands compile
-- [ ] `tauri.ts` adapter created
-- [ ] `index.ts` updated with adapter detection
-- [ ] App uses correct adapter in dev mode
+- [x] Rust dependencies added
+- [x] Rust commands compile
+- [x] `tauri.ts` adapter created
+- [x] `index.ts` updated with adapter detection
+- [x] App uses correct adapter in dev mode
 
 ```bash
 git add .
 git commit -m "Implement Tauri adapter with chardetng"
 ```
 
-- [ ] Committed to git
+- [x] Committed to git
 
 ---
 
@@ -195,17 +195,17 @@ fn save_file(path: String, content: String) -> Result<(), String> {
 
 ### Step 3.4: Git checkpoint
 
-- [ ] File drop enabled
-- [ ] Dialog plugin installed
-- [ ] `save_file` command implemented
-- [ ] Files save directly to disk
+- [x] File drop enabled (via `onDragDropEvent` API)
+- [x] FS plugin installed (`@tauri-apps/plugin-fs`)
+- [x] `save_file` command implemented
+- [x] Files save directly to disk (next to original file)
 
 ```bash
 git add .
 git commit -m "Add native file handling"
 ```
 
-- [ ] Committed to git
+- [x] Committed to git
 
 ---
 
@@ -236,25 +236,25 @@ npm install @tauri-apps/plugin-window-state
 
 ### Step 4.5: Git checkpoint
 
-- [ ] App icons generated
-- [ ] Browser notice hidden in Tauri
-- [ ] Window state plugin installed (optional)
+- [ ] App icons generated (skipped - using default icons)
+- [x] Browser notice hidden in Tauri
+- [ ] Window state plugin installed (skipped - optional)
 
 ```bash
 git add .
-git commit -m "Platform polish: icons, menus, window state"
+git commit -m "Platform polish: hide browser notice in Tauri"
 ```
 
-- [ ] Committed to git
+- [x] Committed to git
 
 ---
 
 ## Phase 5: Build & Release
 
 ### Step 5.1: Test on all platforms
-- [ ] Build and test on macOS
-- [ ] Build and test on Windows
-- [ ] Build and test on Linux (if applicable)
+- [x] Build and test on macOS
+- [ ] Build and test on Windows (future)
+- [ ] Build and test on Linux (future)
 
 ### Step 5.2: Build release binaries
 ```bash

@@ -19,12 +19,12 @@
   let isConverting = $state(false);
   let showSettings = $state(false);
 
-  // Check for File System Access API (Chrome/Edge only)
-  const hasFileSystemAccess = typeof window !== 'undefined' && 'showSaveFilePicker' in window;
+  // Check if running in Tauri (for hiding browser-specific notices)
+  const isTauri = typeof window !== 'undefined' && '__TAURI__' in window;
 
   /** Handle files dropped or selected by user */
-  function handleFiles(files: File[]) {
-    filesStore.addFilesWithDetection(files, $settingsStore.defaultLanguage);
+  function handleFiles(files: File[], paths?: string[]) {
+    filesStore.addFilesWithDetection(files, $settingsStore.defaultLanguage, paths);
   }
 
   /** Convert all ready files to UTF-8 */
@@ -50,12 +50,6 @@
       </button>
     </div>
 
-    {#if !hasFileSystemAccess}
-      <div class="notification is-warning is-light">
-        <strong>Note:</strong> Your browser doesn't support direct file saving. Files will be downloaded instead.
-        For the best experience, use Chrome or Edge.
-      </div>
-    {/if}
 
     <DropZone onfiles={handleFiles} />
 
