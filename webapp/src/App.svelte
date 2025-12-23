@@ -19,9 +19,8 @@
   let isConverting = $state(false);
   let showSettings = $state(false);
 
-  // Check if we have native file saving (Tauri or File System Access API)
+  // Check if running in Tauri (for hiding browser-specific notices)
   const isTauri = typeof window !== 'undefined' && '__TAURI__' in window;
-  const hasFileSystemAccess = isTauri || (typeof window !== 'undefined' && 'showSaveFilePicker' in window);
 
   /** Handle files dropped or selected by user */
   function handleFiles(files: File[], paths?: string[]) {
@@ -51,12 +50,6 @@
       </button>
     </div>
 
-    {#if !hasFileSystemAccess}
-      <div class="notification is-warning is-light">
-        <strong>Note:</strong> Your browser doesn't support direct file saving. Files will be downloaded instead.
-        For the best experience, use Chrome or Edge.
-      </div>
-    {/if}
 
     <DropZone onfiles={handleFiles} />
 

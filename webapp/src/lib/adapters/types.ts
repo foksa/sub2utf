@@ -15,6 +15,14 @@ export interface ConversionResult {
 }
 
 /**
+ * Result of reading files (from drop or dialog)
+ */
+export interface FileReadResult {
+  files: File[];
+  paths?: string[]; // Only available in Tauri
+}
+
+/**
  * File adapter interface - abstracts file operations for web/native
  */
 export interface FileAdapter {
@@ -30,6 +38,25 @@ export interface FileAdapter {
 
   /**
    * Save converted content to a file
+   * @param filenameOrPath - filename for web (shows dialog), full path for Tauri
    */
-  saveFile(filename: string, content: string): Promise<void>;
+  saveFile(filenameOrPath: string, content: string): Promise<void>;
+
+  /**
+   * Read files from paths (for drag-drop with paths)
+   * Only meaningful in Tauri where we have full paths
+   */
+  readFilesFromPaths?(paths: string[]): Promise<FileReadResult>;
+
+  /**
+   * Open file picker dialog
+   * Returns files and optionally paths (Tauri only)
+   */
+  openFileDialog?(): Promise<FileReadResult | null>;
+
+  /**
+   * Set up drag-drop listener (Tauri only)
+   * Returns unlisten function
+   */
+  setupDragDrop?(onDrop: (result: FileReadResult) => void): Promise<() => void>;
 }
