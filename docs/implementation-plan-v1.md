@@ -152,7 +152,7 @@ git add .
 git commit -m "Implement Tauri adapter with chardetng"
 ```
 
-- [ ] Committed to git
+- [x] Committed to git
 
 ---
 
@@ -195,17 +195,17 @@ fn save_file(path: String, content: String) -> Result<(), String> {
 
 ### Step 3.4: Git checkpoint
 
-- [ ] File drop enabled
-- [ ] Dialog plugin installed
-- [ ] `save_file` command implemented
-- [ ] Files save directly to disk
+- [x] File drop enabled (via `onDragDropEvent` API)
+- [x] FS plugin installed (`@tauri-apps/plugin-fs`)
+- [x] `save_file` command implemented
+- [x] Files save directly to disk (next to original file)
 
 ```bash
 git add .
 git commit -m "Add native file handling"
 ```
 
-- [ ] Committed to git
+- [x] Committed to git
 
 ---
 

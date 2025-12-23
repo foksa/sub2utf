@@ -33,7 +33,8 @@ export const tauriAdapter: FileAdapter = {
     }
   },
 
-  async saveFile(filename: string, content: string): Promise<void> {
-    await invoke('save_file', { path: filename, content });
+  async saveFile(path: string, content: string): Promise<void> {
+    // Path should be the full path (including directory) passed from the store
+    await invoke('save_file', { path, content });
   },
 };

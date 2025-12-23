@@ -23,8 +23,8 @@
   const hasFileSystemAccess = typeof window !== 'undefined' && 'showSaveFilePicker' in window;
 
   /** Handle files dropped or selected by user */
-  function handleFiles(files: File[]) {
-    filesStore.addFilesWithDetection(files, $settingsStore.defaultLanguage);
+  function handleFiles(files: File[], paths?: string[]) {
+    filesStore.addFilesWithDetection(files, $settingsStore.defaultLanguage, paths);
   }
 
   /** Convert all ready files to UTF-8 */

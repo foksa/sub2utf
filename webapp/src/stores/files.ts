@@ -4,7 +4,7 @@
  * File lifecycle: pending → detecting → ready/skipped/error → processing → done/error
  */
 import { writable } from 'svelte/store';
-import { webAdapter } from '../lib/adapters';
+import { adapter } from '../lib/adapters';
 
 /**
  * Status of a file in the conversion pipeline.
@@ -26,6 +26,8 @@ export interface FileEntry {
   name: string;
   /** Reference to the File object */
   file: File;
+  /** Full path to original file (Tauri only) */
+  path?: string;
   /** Detected or user-selected encoding */
   encoding: string;
   /** Output language code for this file (e.g., 'sr', 'en') */
@@ -93,13 +95,15 @@ function createFilesStore() {
     /**
      * Add files and detect their encodings.
      * Updates status: pending → detecting → ready/skipped/error
+     * @param paths Optional array of full file paths (Tauri only)
      */
-    async addFilesWithDetection(files: File[], defaultLanguage: string) {
+    async addFilesWithDetection(files: File[], defaultLanguage: string, paths?: string[]) {
       // First add all files as pending
-      const newEntries = files.map(file => ({
+      const newEntries = files.map((file, index) => ({
         id: crypto.randomUUID(),
         name: file.name,
         file,
+        path: paths?.[index],
         encoding: '',
         language: defaultLanguage,
         status: 'pending' as FileStatus
@@ -114,7 +118,7 @@ function createFilesStore() {
         );
 
         try {
-          const result = await webAdapter.detectEncoding(entry.file);
+          const result = await adapter.detectEncoding(entry.file);
 
           if (result.encoding.toUpperCase() === 'UTF-8') {
             update(entries =>
@@ -151,7 +155,7 @@ function createFilesStore() {
         );
 
         try {
-          const result = await webAdapter.convertFile(entry.file, entry.encoding);
+          const result = await adapter.convertFile(entry.file, entry.encoding);
 
           if (result.success && result.content) {
             update(entries =>
@@ -166,7 +170,13 @@ function createFilesStore() {
             const baseName = entry.name.replace(/\.srt$/i, '');
             const outputName = `${baseName}.${entry.language}.srt`;
 
-            await webAdapter.saveFile(outputName, result.content);
+            // If we have the original path, save next to it; otherwise just use filename
+            if (entry.path) {
+              const dir = entry.path.substring(0, entry.path.lastIndexOf('/') + 1);
+              await adapter.saveFile(dir + outputName, result.content);
+            } else {
+              await adapter.saveFile(outputName, result.content);
+            }
           } else {
             update(entries =>
               entries.map(e => e.id === entry.id ? {
