@@ -31,7 +31,29 @@ Tauri desktop app with native file system access:
 - Completion summary after batch conversion
 - Evaluate lighter CSS alternatives to Bulma (Pico CSS, Open Props, custom CSS)
 - Custom app icons
-- Windows and Linux builds
+- Add Rust caching to CI workflow (Swatinem/rust-cache) for faster builds
+
+### Code Signing
+
+Currently unsigned - users must bypass OS security warnings.
+
+**macOS:**
+- Unsigned apps blocked by Gatekeeper (no "Open Anyway" option)
+- Workaround: `xattr -cr /path/to/app`
+- Proper fix: Apple Developer ID ($99/year) + notarization
+- No free option for open source
+
+**Windows:**
+- SmartScreen shows "Windows protected your PC" warning
+- Users click "More info" → "Run anyway"
+- Options:
+  - EV Certificate ($300-500/year) - immediate trust, requires hardware token
+  - Standard Certificate ($70-200/year) - builds reputation over time
+  - Azure Trusted Signing (~$10/month) - cloud-based, immediate trust
+- SignPath.io offers free signing for open source (application required)
+
+**Linux:**
+- No signing required - packages just work
 
 ## v2.0 — Batch Processing
 

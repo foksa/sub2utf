@@ -42,46 +42,91 @@
   );
 </script>
 
-<tr>
-  <td>
+<div class="file-item">
+  <div class="file-header">
     <span class={statusInfo.class}>{statusInfo.icon}</span>
-  </td>
-  <td>{entry.name}</td>
-  <td>
-    {#if entry.encoding}
-      <div class="is-flex is-align-items-center">
-        <EncodingSelect
-          value={entry.encoding}
-          onchange={(enc) => onencoding(entry.id, enc)}
-        />
-        {#if encodingMismatch}
-          <span
-            class="ml-1 has-text-warning"
-            title={mismatchTooltip}
-          >⚠️</span>
-        {/if}
-      </div>
-    {:else}
-      <span class="has-text-grey">—</span>
-    {/if}
-  </td>
-  <td>
-    <LanguageSelect
-      value={entry.language}
-      onchange={(lang) => onlanguage(entry.id, lang)}
-    />
-  </td>
-  <td>
-    <span class="is-capitalized">{entry.status}</span>
-    {#if entry.error}
-      <span class="has-text-danger ml-2" title={entry.error}>⚠</span>
-    {/if}
-  </td>
-  <td>
+    <span class="filename" title={entry.name}>{entry.name}</span>
     <button
       class="delete is-small"
       onclick={() => onremove(entry.id)}
       title="Remove file"
     ></button>
-  </td>
-</tr>
+  </div>
+  <div class="file-controls">
+    <div class="control-group">
+      <span class="control-label">Encoding:</span>
+      {#if entry.encoding}
+        <EncodingSelect
+          value={entry.encoding}
+          onchange={(enc) => onencoding(entry.id, enc)}
+        />
+        {#if encodingMismatch}
+          <span class="has-text-warning" title={mismatchTooltip}>⚠️</span>
+        {/if}
+      {:else}
+        <span class="has-text-grey">detecting...</span>
+      {/if}
+    </div>
+    <div class="control-group">
+      <span class="control-label">Language:</span>
+      <LanguageSelect
+        value={entry.language}
+        onchange={(lang) => onlanguage(entry.id, lang)}
+      />
+    </div>
+    <div class="control-group">
+      <span class="status-text is-capitalized">{entry.status}</span>
+      {#if entry.error}
+        <span class="has-text-danger" title={entry.error}>⚠</span>
+      {/if}
+    </div>
+  </div>
+</div>
+
+<style>
+  .file-item {
+    padding: 0.75rem;
+    border-bottom: 1px solid var(--bulma-border);
+  }
+
+  .file-item:last-child {
+    border-bottom: none;
+  }
+
+  .file-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .filename {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-weight: 500;
+  }
+
+  .file-controls {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    padding-left: 1.5rem;
+  }
+
+  .control-group {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .control-label {
+    color: var(--bulma-text-weak);
+    font-size: 0.875rem;
+  }
+
+  .status-text {
+    font-size: 0.875rem;
+  }
+</style>
