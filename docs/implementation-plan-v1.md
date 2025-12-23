@@ -252,9 +252,9 @@ git commit -m "Platform polish: hide browser notice in Tauri"
 ## Phase 5: Build & Release
 
 ### Step 5.1: Test on all platforms
-- [ ] Build and test on macOS
-- [ ] Build and test on Windows
-- [ ] Build and test on Linux (if applicable)
+- [x] Build and test on macOS
+- [ ] Build and test on Windows (future)
+- [ ] Build and test on Linux (future)
 
 ### Step 5.2: Build release binaries
 ```bash
