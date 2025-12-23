@@ -6,6 +6,7 @@ import purgecss from 'vite-plugin-purgecss'
 
 // https://vite.dev/config/
 export default defineConfig({
+  base: '/sub2utf/',
   plugins: [
     wasm(),
     topLevelAwait(),
