@@ -19,6 +19,7 @@ Web-first implementation:
 ### Future Web Improvements
 - JSZip bundling for multiple file downloads in Safari/Firefox
 - Completion summary after batch conversion
+- Evaluate lighter CSS alternatives to Bulma (Pico CSS, Open Props, custom CSS)
 
 ## v1.0 — Native App (Tauri)
 
