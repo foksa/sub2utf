@@ -19,8 +19,9 @@
   let isConverting = $state(false);
   let showSettings = $state(false);
 
-  // Check for File System Access API (Chrome/Edge only)
-  const hasFileSystemAccess = typeof window !== 'undefined' && 'showSaveFilePicker' in window;
+  // Check if we have native file saving (Tauri or File System Access API)
+  const isTauri = typeof window !== 'undefined' && '__TAURI__' in window;
+  const hasFileSystemAccess = isTauri || (typeof window !== 'undefined' && 'showSaveFilePicker' in window);
 
   /** Handle files dropped or selected by user */
   function handleFiles(files: File[], paths?: string[]) {

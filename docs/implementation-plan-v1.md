@@ -236,16 +236,16 @@ npm install @tauri-apps/plugin-window-state
 
 ### Step 4.5: Git checkpoint
 
-- [ ] App icons generated
-- [ ] Browser notice hidden in Tauri
-- [ ] Window state plugin installed (optional)
+- [ ] App icons generated (skipped - using default icons)
+- [x] Browser notice hidden in Tauri
+- [ ] Window state plugin installed (skipped - optional)
 
 ```bash
 git add .
-git commit -m "Platform polish: icons, menus, window state"
+git commit -m "Platform polish: hide browser notice in Tauri"
 ```
 
-- [ ] Committed to git
+- [x] Committed to git
 
 ---
 
