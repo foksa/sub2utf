@@ -5,7 +5,7 @@ import topLevelAwait from 'vite-plugin-top-level-await'
 
 // https://vite.dev/config/
 export default defineConfig({
-  base: '/sub2utf/',
+  base: '/',
   plugins: [
     wasm(),
     topLevelAwait(),
