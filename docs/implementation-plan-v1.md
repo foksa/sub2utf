@@ -68,7 +68,7 @@ git add .
 git commit -m "Add Tauri scaffolding"
 ```
 
-- [ ] Committed to git
+- [x] Committed to git
 
 ---
 
@@ -141,11 +141,11 @@ export const adapter = isTauri ? tauriAdapter : webAdapter;
 
 ### Step 2.5: Git checkpoint
 
-- [ ] Rust dependencies added
-- [ ] Rust commands compile
-- [ ] `tauri.ts` adapter created
-- [ ] `index.ts` updated with adapter detection
-- [ ] App uses correct adapter in dev mode
+- [x] Rust dependencies added
+- [x] Rust commands compile
+- [x] `tauri.ts` adapter created
+- [x] `index.ts` updated with adapter detection
+- [x] App uses correct adapter in dev mode
 
 ```bash
 git add .

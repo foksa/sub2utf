@@ -23,6 +23,7 @@
     "vite-plugin-wasm": "^3.5.0"
   },
   "dependencies": {
+    "@tauri-apps/api": "^2.9.1",
     "bulma": "^1.0.4",
     "chardetng-wasm": "^1.0.2"
   }
