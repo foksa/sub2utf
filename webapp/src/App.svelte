@@ -11,7 +11,6 @@
 <script lang="ts">
   import { filesStore } from './stores/files';
   import { settingsStore } from './stores/settings';
-  import { webAdapter } from './lib/adapters';
   import DropZone from './components/DropZone.svelte';
   import FileList from './components/FileList.svelte';
   import Settings from './components/Settings.svelte';
@@ -23,92 +22,19 @@
   // Check for File System Access API (Chrome/Edge only)
   const hasFileSystemAccess = typeof window !== 'undefined' && 'showSaveFilePicker' in window;
 
-  /**
-   * Handle files dropped or selected by user.
-   * Adds files to store and runs encoding detection.
-   */
-  async function handleFiles(files: File[]) {
-    filesStore.addFiles(files, $settingsStore.defaultLanguage);
-
-    // Detect encoding for each file sequentially
-    for (const file of files) {
-      const entries = filesStore.getEntries();
-      const entry = entries.find(e => e.file === file);
-      if (!entry) continue;
-
-      filesStore.updateEntry(entry.id, { status: 'detecting' });
-
-      try {
-        const result = await webAdapter.detectEncoding(file);
-
-        // Skip files already in UTF-8
-        if (result.encoding.toUpperCase() === 'UTF-8') {
-          filesStore.updateEntry(entry.id, {
-            encoding: result.encoding,
-            status: 'skipped'
-          });
-        } else {
-          filesStore.updateEntry(entry.id, {
-            encoding: result.encoding,
-            status: 'ready'
-          });
-        }
-      } catch (error) {
-        filesStore.updateEntry(entry.id, {
-          status: 'error',
-          error: error instanceof Error ? error.message : 'Detection failed'
-        });
-      }
-    }
+  /** Handle files dropped or selected by user */
+  function handleFiles(files: File[]) {
+    filesStore.addFilesWithDetection(files, $settingsStore.defaultLanguage);
   }
 
-  /**
-   * Convert all files with 'ready' status to UTF-8.
-   * Saves each file with the selected language suffix.
-   */
+  /** Convert all ready files to UTF-8 */
   async function convertAll() {
-    const entries = filesStore.getEntries();
-    const toConvert = entries.filter(e => e.status === 'ready');
-
-    if (toConvert.length === 0) return;
-
     isConverting = true;
-
-    for (const entry of toConvert) {
-      filesStore.updateEntry(entry.id, { status: 'processing' });
-
-      try {
-        const result = await webAdapter.convertFile(entry.file, entry.encoding);
-
-        if (result.success && result.content) {
-          filesStore.updateEntry(entry.id, {
-            status: 'done',
-            convertedContent: result.content
-          });
-
-          // Generate output filename: movie.srt → movie.sr.srt
-          const baseName = entry.name.replace(/\.srt$/i, '');
-          const outputName = `${baseName}.${entry.language}.srt`;
-
-          await webAdapter.saveFile(outputName, result.content);
-        } else {
-          filesStore.updateEntry(entry.id, {
-            status: 'error',
-            error: result.error || 'Conversion failed'
-          });
-        }
-      } catch (error) {
-        filesStore.updateEntry(entry.id, {
-          status: 'error',
-          error: error instanceof Error ? error.message : 'Conversion failed'
-        });
-      }
-    }
-
+    await filesStore.convertReady();
     isConverting = false;
   }
 
-  // Count of files ready for conversion (for button label) - use $filesStore for reactivity
+  // Count of files ready for conversion (for button label)
   let readyCount = $derived($filesStore.filter(e => e.status === 'ready').length);
 </script>
 

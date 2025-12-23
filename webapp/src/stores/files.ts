@@ -4,6 +4,7 @@
  * File lifecycle: pending → detecting → ready/skipped/error → processing → done/error
  */
 import { writable } from 'svelte/store';
+import { webAdapter } from '../lib/adapters';
 
 /**
  * Status of a file in the conversion pipeline.
@@ -87,6 +88,104 @@ function createFilesStore() {
     /** Clear all entries */
     clear() {
       set([]);
+    },
+
+    /**
+     * Add files and detect their encodings.
+     * Updates status: pending → detecting → ready/skipped/error
+     */
+    async addFilesWithDetection(files: File[], defaultLanguage: string) {
+      // First add all files as pending
+      const newEntries = files.map(file => ({
+        id: crypto.randomUUID(),
+        name: file.name,
+        file,
+        encoding: '',
+        language: defaultLanguage,
+        status: 'pending' as FileStatus
+      }));
+
+      update(entries => [...entries, ...newEntries]);
+
+      // Detect encoding for each file
+      for (const entry of newEntries) {
+        update(entries =>
+          entries.map(e => e.id === entry.id ? { ...e, status: 'detecting' as FileStatus } : e)
+        );
+
+        try {
+          const result = await webAdapter.detectEncoding(entry.file);
+
+          if (result.encoding.toUpperCase() === 'UTF-8') {
+            update(entries =>
+              entries.map(e => e.id === entry.id ? { ...e, encoding: result.encoding, status: 'skipped' as FileStatus } : e)
+            );
+          } else {
+            update(entries =>
+              entries.map(e => e.id === entry.id ? { ...e, encoding: result.encoding, status: 'ready' as FileStatus } : e)
+            );
+          }
+        } catch (error) {
+          update(entries =>
+            entries.map(e => e.id === entry.id ? {
+              ...e,
+              status: 'error' as FileStatus,
+              error: error instanceof Error ? error.message : 'Detection failed'
+            } : e)
+          );
+        }
+      }
+    },
+
+    /**
+     * Convert all ready files to UTF-8 and save them.
+     * Updates status: ready → processing → done/error
+     */
+    async convertReady(): Promise<void> {
+      const toConvert = currentEntries.filter(e => e.status === 'ready');
+      if (toConvert.length === 0) return;
+
+      for (const entry of toConvert) {
+        update(entries =>
+          entries.map(e => e.id === entry.id ? { ...e, status: 'processing' as FileStatus } : e)
+        );
+
+        try {
+          const result = await webAdapter.convertFile(entry.file, entry.encoding);
+
+          if (result.success && result.content) {
+            update(entries =>
+              entries.map(e => e.id === entry.id ? {
+                ...e,
+                status: 'done' as FileStatus,
+                convertedContent: result.content
+              } : e)
+            );
+
+            // Generate output filename: movie.srt → movie.sr.srt
+            const baseName = entry.name.replace(/\.srt$/i, '');
+            const outputName = `${baseName}.${entry.language}.srt`;
+
+            await webAdapter.saveFile(outputName, result.content);
+          } else {
+            update(entries =>
+              entries.map(e => e.id === entry.id ? {
+                ...e,
+                status: 'error' as FileStatus,
+                error: result.error || 'Conversion failed'
+              } : e)
+            );
+          }
+        } catch (error) {
+          update(entries =>
+            entries.map(e => e.id === entry.id ? {
+              ...e,
+              status: 'error' as FileStatus,
+              error: error instanceof Error ? error.message : 'Conversion failed'
+            } : e)
+          );
+        }
+      }
     }
   };
 }
