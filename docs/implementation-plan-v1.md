@@ -8,9 +8,9 @@ Step-by-step plan to wrap the web app in Tauri for native desktop experience.
 
 ## Prerequisites
 
-- Rust toolchain (rustup)
-- Node.js 18+
-- Platform-specific dependencies:
+- [ ] Rust toolchain (rustup)
+- [ ] Node.js 18+
+- [ ] Platform-specific dependencies:
   - macOS: Xcode Command Line Tools
   - Windows: Microsoft Visual Studio C++ Build Tools
   - Linux: `webkit2gtk`, `libappindicator3`
@@ -56,11 +56,19 @@ npm run tauri dev
 **Checkpoint**: Native window opens with web app running inside
 
 ### Step 1.5: Git checkpoint
+
+- [ ] Tauri CLI installed
+- [ ] `src-tauri/` folder created
+- [ ] `tauri.conf.json` configured
+- [ ] Dev mode works (native window opens)
+
 ```bash
 git checkout -b feat/tauri-v1
 git add .
 git commit -m "Add Tauri scaffolding"
 ```
+
+- [ ] Committed to git
 
 ---
 
@@ -132,10 +140,19 @@ export const adapter = isTauri ? tauriAdapter : webAdapter;
 **Checkpoint**: App uses correct adapter based on environment
 
 ### Step 2.5: Git checkpoint
+
+- [ ] Rust dependencies added
+- [ ] Rust commands compile
+- [ ] `tauri.ts` adapter created
+- [ ] `index.ts` updated with adapter detection
+- [ ] App uses correct adapter in dev mode
+
 ```bash
 git add .
 git commit -m "Implement Tauri adapter with chardetng"
 ```
+
+- [ ] Committed to git
 
 ---
 
@@ -177,10 +194,18 @@ fn save_file(path: String, content: String) -> Result<(), String> {
 **Checkpoint**: Files save directly without browser dialogs
 
 ### Step 3.4: Git checkpoint
+
+- [ ] File drop enabled
+- [ ] Dialog plugin installed
+- [ ] `save_file` command implemented
+- [ ] Files save directly to disk
+
 ```bash
 git add .
 git commit -m "Add native file handling"
 ```
+
+- [ ] Committed to git
 
 ---
 
@@ -210,19 +235,26 @@ npm install @tauri-apps/plugin-window-state
 ```
 
 ### Step 4.5: Git checkpoint
+
+- [ ] App icons generated
+- [ ] Browser notice hidden in Tauri
+- [ ] Window state plugin installed (optional)
+
 ```bash
 git add .
 git commit -m "Platform polish: icons, menus, window state"
 ```
+
+- [ ] Committed to git
 
 ---
 
 ## Phase 5: Build & Release
 
 ### Step 5.1: Test on all platforms
-- Build and test on macOS
-- Build and test on Windows
-- Build and test on Linux (if applicable)
+- [ ] Build and test on macOS
+- [ ] Build and test on Windows
+- [ ] Build and test on Linux (if applicable)
 
 ### Step 5.2: Build release binaries
 ```bash
@@ -235,8 +267,8 @@ Outputs:
 - Linux: `.deb`, `.AppImage`
 
 ### Step 5.3: Code signing (optional but recommended)
-- macOS: Sign with Apple Developer certificate
-- Windows: Sign with code signing certificate
+- [ ] macOS: Sign with Apple Developer certificate
+- [ ] Windows: Sign with code signing certificate
 
 ### Step 5.4: Create GitHub Release
 ```bash
@@ -244,12 +276,13 @@ git tag v1.0.0
 git push origin v1.0.0
 ```
 
-Upload binaries to GitHub Releases.
+- [ ] Tag created and pushed
+- [ ] Binaries uploaded to GitHub Releases
 
 ### Step 5.5: Update README
-- Add download links for each platform
-- Update installation instructions
-- Add screenshots
+- [ ] Download links for each platform
+- [ ] Installation instructions updated
+- [ ] Screenshots added
 
 ---
 
