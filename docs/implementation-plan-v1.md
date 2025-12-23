@@ -8,9 +8,9 @@ Step-by-step plan to wrap the web app in Tauri for native desktop experience.
 
 ## Prerequisites
 
-- [ ] Rust toolchain (rustup)
-- [ ] Node.js 18+
-- [ ] Platform-specific dependencies:
+- [x] Rust toolchain (rustup)
+- [x] Node.js 18+
+- [x] Platform-specific dependencies:
   - macOS: Xcode Command Line Tools
   - Windows: Microsoft Visual Studio C++ Build Tools
   - Linux: `webkit2gtk`, `libappindicator3`
@@ -57,10 +57,10 @@ npm run tauri dev
 
 ### Step 1.5: Git checkpoint
 
-- [ ] Tauri CLI installed
-- [ ] `src-tauri/` folder created
-- [ ] `tauri.conf.json` configured
-- [ ] Dev mode works (native window opens)
+- [x] Tauri CLI installed
+- [x] `src-tauri/` folder created
+- [x] `tauri.conf.json` configured
+- [x] Dev mode works (native window opens)
 
 ```bash
 git checkout -b feat/tauri-v1
