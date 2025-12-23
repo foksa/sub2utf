@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "archive/implementation-plan-1.md",
+                "file": "implementation-plan-final.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "implementation-plan-1"
+              "title": "implementation-plan-final"
             }
           }
         ]
@@ -182,8 +182,12 @@
   },
   "active": "ef72eb683e21a485",
   "lastOpenFiles": [
-    "implementation-plan.md",
+    "implementation-plan-v1.md",
+    "implementation-case-study.md",
     "archive/implementation-plan-1.md",
+    "implementation-plan.md",
+    "implementation-plan-final.md",
+    "implementation-details.md",
     "archive/tech-spec-0.md",
     "archive/implementation-plan-0.md",
     "archive",
@@ -199,7 +203,6 @@
     "planning",
     "ui-spec.md",
     "roadmap.md",
-    "implementation-details.md",
     "problem-description.md"
   ]
 }
