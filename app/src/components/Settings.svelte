@@ -88,9 +88,17 @@
         <input type="checkbox" role="switch" bind:checked={promptForSaveLocation} />
         <span>Ask where to save each file</span>
       </label>
-      <label class="toggle-field">
-        <input type="checkbox" role="switch" bind:checked={askBeforeOverwrite} />
+      <label class="toggle-field" class:disabled={promptForSaveLocation}>
+        <input
+          type="checkbox"
+          role="switch"
+          bind:checked={askBeforeOverwrite}
+          disabled={promptForSaveLocation}
+        />
         <span>Ask before overwriting existing files</span>
+        {#if promptForSaveLocation}
+          <small class="hint">Save dialog always asks</small>
+        {/if}
       </label>
       <hr />
     {/if}
@@ -211,6 +219,17 @@
 
   .toggle-field input[type="checkbox"] {
     margin: 0;
+  }
+
+  .toggle-field.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .toggle-field .hint {
+    font-size: 0.75rem;
+    color: var(--pico-muted-color);
+    font-style: italic;
   }
 
   .tabs {
