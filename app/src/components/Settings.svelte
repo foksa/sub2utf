@@ -1,5 +1,6 @@
 <script lang="ts">
   import { settingsStore, type LanguageOption } from '../stores/settings';
+  import { isTauri } from '../lib/platform';
   import allEncodings from '../data/encodings.json';
   import allLanguages from '../data/languages.json';
   import CheckboxList from './CheckboxList.svelte';
@@ -13,9 +14,6 @@
   let defaultLang = $state($settingsStore.defaultLanguage);
   let promptForSaveLocation = $state($settingsStore.promptForSaveLocation);
   let activeTab = $state<'languages' | 'encodings'>('languages');
-
-  // Check if running in Tauri
-  const isTauri = '__TAURI__' in window;
 
   // Selected encodings and languages (as Sets for easy lookup)
   let selectedEncodings = $state(new Set($settingsStore.encodings));
