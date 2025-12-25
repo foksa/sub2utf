@@ -1,16 +1,22 @@
 use chardetng::EncodingDetector;
 use encoding_rs::Encoding;
 
+/// Detects the encoding of file data using chardetng.
+///
+/// Returns a tuple of (encoding name, confidence). Confidence is always 1.0
+/// since chardetng doesn't provide confidence scores.
 #[tauri::command]
 fn detect_encoding(data: Vec<u8>) -> Result<(String, f32), String> {
     let mut detector = EncodingDetector::new();
     detector.feed(&data, true);
     let encoding = detector.guess(None, true);
     let name = encoding.name().to_string();
-    // chardetng doesn't provide confidence, so we use 1.0 for detected encodings
     Ok((name, 1.0))
 }
 
+/// Converts file data from source encoding to UTF-8.
+///
+/// Returns an error if the encoding is unknown or decoding fails.
 #[tauri::command]
 fn convert_to_utf8(data: Vec<u8>, encoding: String) -> Result<String, String> {
     let enc = Encoding::for_label(encoding.as_bytes())
@@ -25,6 +31,9 @@ fn convert_to_utf8(data: Vec<u8>, encoding: String) -> Result<String, String> {
     }
 }
 
+/// Saves UTF-8 content to a file at the specified path.
+///
+/// Returns an error if the file write fails.
 #[tauri::command]
 fn save_file(path: String, content: String) -> Result<(), String> {
     std::fs::write(&path, content).map_err(|e| e.to_string())

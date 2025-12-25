@@ -19,6 +19,8 @@ export interface Settings {
   languages: LanguageOption[];
   /** Prompt for save location instead of saving next to original (Tauri only) */
   promptForSaveLocation: boolean;
+  /** Ask before overwriting existing files (Tauri only) */
+  askBeforeOverwrite: boolean;
 }
 
 const STORAGE_KEY = 'sub2utf-settings';
@@ -51,10 +53,14 @@ const defaultSettings: Settings = {
     { code: 'sk', name: 'Slovak' },
     { code: 'hu', name: 'Hungarian' }
   ],
-  promptForSaveLocation: false
+  promptForSaveLocation: false,
+  askBeforeOverwrite: false
 };
 
-/** Load settings from localStorage, falling back to defaults */
+/**
+ * Load settings from localStorage, falling back to defaults.
+ * @returns Merged settings with defaults for any missing keys
+ */
 function loadSettings(): Settings {
   if (typeof localStorage === 'undefined') return defaultSettings;
 
@@ -77,7 +83,10 @@ function createSettingsStore() {
   return {
     subscribe,
 
-    /** Update settings and persist to localStorage */
+    /**
+     * Update settings and persist to localStorage.
+     * @param updates - Partial settings to merge with current values
+     */
     update(updates: Partial<Settings>) {
       update(settings => {
         const newSettings = { ...settings, ...updates };
@@ -86,7 +95,9 @@ function createSettingsStore() {
       });
     },
 
-    /** Reset to default settings and clear localStorage */
+    /**
+     * Reset to default settings and clear localStorage.
+     */
     reset() {
       localStorage.removeItem(STORAGE_KEY);
       set(defaultSettings);

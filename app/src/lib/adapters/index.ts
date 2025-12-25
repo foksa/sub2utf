@@ -5,6 +5,10 @@ export { tauriAdapter } from './tauri';
 import type { FileAdapter } from './types';
 import { webAdapter } from './web';
 import { tauriAdapter } from './tauri';
+import { isTauri } from '../platform';
 
-const isTauri = '__TAURI__' in window;
+/**
+ * Platform-appropriate file adapter.
+ * Uses tauriAdapter for desktop, webAdapter for browser.
+ */
 export const adapter: FileAdapter = isTauri ? tauriAdapter : webAdapter;

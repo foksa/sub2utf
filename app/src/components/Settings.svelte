@@ -13,6 +13,7 @@
 
   let defaultLang = $state($settingsStore.defaultLanguage);
   let promptForSaveLocation = $state($settingsStore.promptForSaveLocation);
+  let askBeforeOverwrite = $state($settingsStore.askBeforeOverwrite);
   let activeTab = $state<'languages' | 'encodings'>('languages');
 
   // Selected encodings and languages (as Sets for easy lookup)
@@ -31,7 +32,11 @@
     }
   });
 
-  function toggleEncoding(enc: string) {
+  /**
+   * Toggle an encoding's selected state.
+   * @param enc - Encoding code to toggle
+   */
+  function toggleEncoding(enc: string): void {
     if (selectedEncodings.has(enc)) {
       selectedEncodings.delete(enc);
     } else {
@@ -40,7 +45,11 @@
     selectedEncodings = new Set(selectedEncodings); // trigger reactivity
   }
 
-  function toggleLanguage(code: string) {
+  /**
+   * Toggle a language's selected state.
+   * @param code - Language code to toggle
+   */
+  function toggleLanguage(code: string): void {
     if (selectedLanguages.has(code)) {
       selectedLanguages.delete(code);
     } else {
@@ -49,7 +58,10 @@
     selectedLanguages = new Set(selectedLanguages); // trigger reactivity
   }
 
-  function save() {
+  /**
+   * Save current settings to store and close dialog.
+   */
+  function save(): void {
     // Convert selected languages back to LanguageOption[]
     const langs: LanguageOption[] = allLanguages
       .filter(l => selectedLanguages.has(l.code))
@@ -59,15 +71,20 @@
       defaultLanguage: defaultLang,
       encodings: Array.from(selectedEncodings),
       languages: langs,
-      promptForSaveLocation
+      promptForSaveLocation,
+      askBeforeOverwrite
     });
     onclose();
   }
 
-  function reset() {
+  /**
+   * Reset all settings to defaults.
+   */
+  function reset(): void {
     settingsStore.reset();
     defaultLang = 'sr';
     promptForSaveLocation = false;
+    askBeforeOverwrite = false;
     selectedEncodings = new Set($settingsStore.encodings);
     selectedLanguages = new Set($settingsStore.languages.map(l => l.code));
   }
@@ -84,6 +101,18 @@
       <label class="toggle-field">
         <input type="checkbox" role="switch" bind:checked={promptForSaveLocation} />
         <span>Ask where to save each file</span>
+      </label>
+      <label class="toggle-field" class:disabled={promptForSaveLocation}>
+        <input
+          type="checkbox"
+          role="switch"
+          bind:checked={askBeforeOverwrite}
+          disabled={promptForSaveLocation}
+        />
+        <span>Ask before overwriting existing files</span>
+        {#if promptForSaveLocation}
+          <small class="hint">Save dialog always asks</small>
+        {/if}
       </label>
       <hr />
     {/if}
@@ -204,6 +233,17 @@
 
   .toggle-field input[type="checkbox"] {
     margin: 0;
+  }
+
+  .toggle-field.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .toggle-field .hint {
+    font-size: 0.75rem;
+    color: var(--pico-muted-color);
+    font-style: italic;
   }
 
   .tabs {

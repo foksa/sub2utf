@@ -67,4 +67,10 @@ export interface FileAdapter {
    * @returns true if saved, false if cancelled
    */
   saveFileWithDialog?(defaultName: string, content: string): Promise<boolean>;
+
+  /**
+   * Check if file exists and prompt user to confirm overwrite (Tauri only)
+   * @returns true if file doesn't exist or user confirms overwrite, false if user cancels
+   */
+  confirmOverwrite?(path: string, filename: string): Promise<boolean>;
 }
