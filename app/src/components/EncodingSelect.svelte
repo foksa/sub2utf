@@ -12,7 +12,11 @@
 
   let { value, onchange }: Props = $props();
 
-  function handleChange(event: Event) {
+  /**
+   * Handle select change and notify parent.
+   * @param event - Select change event
+   */
+  function handleChange(event: Event): void {
     const select = event.target as HTMLSelectElement;
     onchange(select.value);
   }

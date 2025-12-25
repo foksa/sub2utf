@@ -29,17 +29,29 @@
     }
   });
 
-  function handleDragOver(event: DragEvent) {
+  /**
+   * Handle dragover event to enable drop.
+   * @param event - Drag event
+   */
+  function handleDragOver(event: DragEvent): void {
     event.preventDefault();
     isDragging = true;
   }
 
-  function handleDragLeave(event: DragEvent) {
+  /**
+   * Handle dragleave event to reset visual state.
+   * @param event - Drag event
+   */
+  function handleDragLeave(event: DragEvent): void {
     event.preventDefault();
     isDragging = false;
   }
 
-  function handleDrop(event: DragEvent) {
+  /**
+   * Handle file drop event (web fallback only).
+   * @param event - Drop event containing files
+   */
+  function handleDrop(event: DragEvent): void {
     event.preventDefault();
     isDragging = false;
 
@@ -55,7 +67,11 @@
     }
   }
 
-  function handleFileInput(event: Event) {
+  /**
+   * Handle file input change event (web fallback).
+   * @param event - Input change event
+   */
+  function handleFileInput(event: Event): void {
     const input = event.target as HTMLInputElement;
     const files = Array.from(input.files || [])
       .filter(file => file.name.endsWith('.srt'));
@@ -67,7 +83,12 @@
     input.value = '';
   }
 
-  async function handleClick(event: MouseEvent) {
+  /**
+   * Handle click to open file picker.
+   * Uses native dialog in Tauri, falls back to input in web.
+   * @param event - Mouse click event
+   */
+  async function handleClick(event: MouseEvent): Promise<void> {
     // Use native file dialog if available (Tauri)
     if (adapter.openFileDialog) {
       event.preventDefault();

@@ -2,18 +2,34 @@
   import { filesStore } from '../stores/files';
   import FileItem from './FileItem.svelte';
 
-  function handleRemove(id: string) {
+  /**
+   * Remove a file entry from the list.
+   * @param id - Entry ID to remove
+   */
+  function handleRemove(id: string): void {
     filesStore.removeEntry(id);
   }
 
-  function handleEncoding(id: string, encoding: string) {
+  /**
+   * Handle encoding change for a file entry.
+   * Resets status to 'ready' if file was already converted.
+   * @param id - Entry ID to update
+   * @param encoding - New encoding value
+   */
+  function handleEncoding(id: string, encoding: string): void {
     const entry = $filesStore.find(e => e.id === id);
     // Reset to ready if file was already converted, so user can convert again
     const status = entry?.status === 'done' ? 'ready' : entry?.status;
     filesStore.updateEntry(id, { encoding, status });
   }
 
-  function handleLanguage(id: string, language: string) {
+  /**
+   * Handle language change for a file entry.
+   * Resets status to 'ready' if file was already converted.
+   * @param id - Entry ID to update
+   * @param language - New language code
+   */
+  function handleLanguage(id: string, language: string): void {
     const entry = $filesStore.find(e => e.id === id);
     // Reset to ready if file was already converted, so user can convert again
     const status = entry?.status === 'done' ? 'ready' : entry?.status;

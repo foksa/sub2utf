@@ -57,12 +57,19 @@ function createFilesStore() {
   return {
     subscribe,
 
-    /** Get current entries synchronously (for use outside reactive contexts) */
+    /**
+     * Get current entries synchronously (for use outside reactive contexts).
+     * @returns Current file entries array
+     */
     getEntries() {
       return currentEntries;
     },
 
-    /** Add new files to the store with 'pending' status */
+    /**
+     * Add new files to the store with 'pending' status.
+     * @param files - Files to add
+     * @param defaultLanguage - Default language code for output files
+     */
     addFiles(files: File[], defaultLanguage: string) {
       update(entries => {
         const newEntries = files.map(file => ({
@@ -77,7 +84,11 @@ function createFilesStore() {
       });
     },
 
-    /** Update a specific entry by ID */
+    /**
+     * Update a specific entry by ID.
+     * @param id - Entry ID to update
+     * @param updates - Partial entry fields to merge
+     */
     updateEntry(id: string, updates: Partial<FileEntry>) {
       update(entries =>
         entries.map(entry =>
@@ -86,18 +97,24 @@ function createFilesStore() {
       );
     },
 
-    /** Remove an entry by ID */
+    /**
+     * Remove an entry by ID.
+     * @param id - Entry ID to remove
+     */
     removeEntry(id: string) {
       update(entries => entries.filter(entry => entry.id !== id));
     },
 
-    /** Clear all entries */
+    /**
+     * Clear all entries from the store.
+     */
     clear() {
       set([]);
     },
 
     /**
      * Validate a file before processing.
+     * @param file - File to validate
      * @returns Error message if invalid, undefined if valid
      */
     validateFile(file: File): string | undefined {
@@ -110,8 +127,10 @@ function createFilesStore() {
 
     /**
      * Detect encoding for a single file entry and update its status.
+     * Updates status: detecting → ready/skipped/error
+     * @param entry - File entry to detect encoding for
      */
-    async detectEncoding(entry: FileEntry) {
+    async detectEncoding(entry: FileEntry): Promise<void> {
       this.updateEntry(entry.id, { status: 'detecting' });
 
       try {
@@ -133,9 +152,11 @@ function createFilesStore() {
     /**
      * Add files and detect their encodings.
      * Updates status: pending → detecting → ready/skipped/error
-     * @param paths Optional array of full file paths (Tauri only)
+     * @param files - Files to add and detect
+     * @param defaultLanguage - Default language code for output files
+     * @param paths - Optional array of full file paths (Tauri only)
      */
-    async addFilesWithDetection(files: File[], defaultLanguage: string, paths?: string[]) {
+    async addFilesWithDetection(files: File[], defaultLanguage: string, paths?: string[]): Promise<void> {
       // Create entries, validating each file
       const newEntries = files.map((file, index) => {
         const validationError = this.validateFile(file);

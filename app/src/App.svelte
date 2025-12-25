@@ -20,13 +20,19 @@
   let isConverting = $state(false);
   let showSettings = $state(false);
 
-  /** Handle files dropped or selected by user */
-  function handleFiles(files: File[], paths?: string[]) {
+  /**
+   * Handle files dropped or selected by user.
+   * @param files - Array of File objects to process
+   * @param paths - Optional array of full file paths (Tauri only)
+   */
+  function handleFiles(files: File[], paths?: string[]): void {
     filesStore.addFilesWithDetection(files, $settingsStore.defaultLanguage, paths);
   }
 
-  /** Convert all ready files to UTF-8 */
-  async function convertAll() {
+  /**
+   * Convert all ready files to UTF-8 and save them.
+   */
+  async function convertAll(): Promise<void> {
     isConverting = true;
     await filesStore.convertReady();
     isConverting = false;

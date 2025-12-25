@@ -2,11 +2,14 @@ import { detect as chardetngDetect } from 'chardetng-wasm';
 import type { FileAdapter, EncodingInfo, ConversionResult } from './types';
 
 /**
- * Web-based file adapter using chardetng-wasm (Mozilla's Firefox detector) and File System Access API
+ * Web-based file adapter using chardetng-wasm and browser APIs.
+ * Uses Mozilla's Firefox encoding detector compiled to WASM.
  */
 class WebAdapter implements FileAdapter {
   /**
-   * Detect encoding using chardetng-wasm (Firefox's encoding detector compiled to WASM)
+   * Detect the encoding of a file using chardetng-wasm.
+   * @param file - File to analyze
+   * @returns Detected encoding information
    */
   async detectEncoding(file: File): Promise<EncodingInfo> {
     const buffer = await file.arrayBuffer();
@@ -23,7 +26,10 @@ class WebAdapter implements FileAdapter {
   }
 
   /**
-   * Convert file from source encoding to UTF-8
+   * Convert file content from source encoding to UTF-8 using TextDecoder.
+   * @param file - File to convert
+   * @param sourceEncoding - Source encoding name (e.g., 'windows-1251')
+   * @returns Conversion result with UTF-8 content or error
    */
   async convertFile(file: File, sourceEncoding: string): Promise<ConversionResult> {
     try {
@@ -46,7 +52,9 @@ class WebAdapter implements FileAdapter {
   }
 
   /**
-   * Save file by triggering a download
+   * Save content by triggering a browser download.
+   * @param filename - Suggested filename for the download
+   * @param content - UTF-8 content to save
    */
   async saveFile(filename: string, content: string): Promise<void> {
     const encoder = new TextEncoder();

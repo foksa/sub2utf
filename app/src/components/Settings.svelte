@@ -32,7 +32,11 @@
     }
   });
 
-  function toggleEncoding(enc: string) {
+  /**
+   * Toggle an encoding's selected state.
+   * @param enc - Encoding code to toggle
+   */
+  function toggleEncoding(enc: string): void {
     if (selectedEncodings.has(enc)) {
       selectedEncodings.delete(enc);
     } else {
@@ -41,7 +45,11 @@
     selectedEncodings = new Set(selectedEncodings); // trigger reactivity
   }
 
-  function toggleLanguage(code: string) {
+  /**
+   * Toggle a language's selected state.
+   * @param code - Language code to toggle
+   */
+  function toggleLanguage(code: string): void {
     if (selectedLanguages.has(code)) {
       selectedLanguages.delete(code);
     } else {
@@ -50,7 +58,10 @@
     selectedLanguages = new Set(selectedLanguages); // trigger reactivity
   }
 
-  function save() {
+  /**
+   * Save current settings to store and close dialog.
+   */
+  function save(): void {
     // Convert selected languages back to LanguageOption[]
     const langs: LanguageOption[] = allLanguages
       .filter(l => selectedLanguages.has(l.code))
@@ -66,7 +77,10 @@
     onclose();
   }
 
-  function reset() {
+  /**
+   * Reset all settings to defaults.
+   */
+  function reset(): void {
     settingsStore.reset();
     defaultLang = 'sr';
     promptForSaveLocation = false;
