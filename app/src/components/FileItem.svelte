@@ -81,6 +81,11 @@
       {/if}
     </div>
   </div>
+  {#if entry.error}
+    <div class="error-message">
+      {entry.error}
+    </div>
+  {/if}
 </div>
 
 <style>
@@ -151,4 +156,14 @@
   .success { color: var(--pico-ins-color); }
   .warning { color: var(--pico-mark-background-color); }
   .danger { color: var(--pico-del-color); }
+
+  .error-message {
+    margin-top: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    padding-left: 1.5rem;
+    font-size: 0.875rem;
+    color: var(--pico-del-color);
+    background: color-mix(in srgb, var(--pico-del-color) 10%, transparent);
+    border-radius: var(--pico-border-radius);
+  }
 </style>

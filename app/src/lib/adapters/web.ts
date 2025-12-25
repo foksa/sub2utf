@@ -60,7 +60,8 @@ class WebAdapter implements FileAdapter {
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+    // Delay revocation to ensure download starts in all browsers (Firefox/Safari)
+    setTimeout(() => URL.revokeObjectURL(url), 100);
   }
 }
 

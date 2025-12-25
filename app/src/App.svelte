@@ -11,6 +11,7 @@
 <script lang="ts">
   import { filesStore } from './stores/files';
   import { settingsStore } from './stores/settings';
+  import { isTauri } from './lib/platform';
   import DropZone from './components/DropZone.svelte';
   import FileList from './components/FileList.svelte';
   import Settings from './components/Settings.svelte';
@@ -18,9 +19,6 @@
   // UI state
   let isConverting = $state(false);
   let showSettings = $state(false);
-
-  // Check if running in Tauri (for hiding browser-specific notices)
-  const isTauri = typeof window !== 'undefined' && '__TAURI__' in window;
 
   /** Handle files dropped or selected by user */
   function handleFiles(files: File[], paths?: string[]) {

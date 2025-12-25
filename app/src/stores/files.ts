@@ -7,6 +7,9 @@ import { writable, get } from 'svelte/store';
 import { adapter } from '../lib/adapters';
 import { settingsStore } from './settings';
 
+/** Maximum file size allowed (5MB) - subtitle files should never be this large */
+const MAX_FILE_SIZE = 5 * 1024 * 1024;
+
 /**
  * Status of a file in the conversion pipeline.
  * - pending: Just added, waiting for encoding detection
@@ -94,51 +97,66 @@ function createFilesStore() {
     },
 
     /**
+     * Validate a file before processing.
+     * @returns Error message if invalid, undefined if valid
+     */
+    validateFile(file: File): string | undefined {
+      if (file.size > MAX_FILE_SIZE) {
+        const sizeMB = (file.size / (1024 * 1024)).toFixed(1);
+        return `File too large (${sizeMB}MB). Maximum allowed is 5MB.`;
+      }
+      return undefined;
+    },
+
+    /**
+     * Detect encoding for a single file entry and update its status.
+     */
+    async detectEncoding(entry: FileEntry) {
+      this.updateEntry(entry.id, { status: 'detecting' });
+
+      try {
+        const result = await adapter.detectEncoding(entry.file);
+        const isUtf8 = result.encoding.toUpperCase() === 'UTF-8';
+
+        this.updateEntry(entry.id, {
+          encoding: result.encoding,
+          status: isUtf8 ? 'skipped' : 'ready'
+        });
+      } catch (error) {
+        this.updateEntry(entry.id, {
+          status: 'error',
+          error: error instanceof Error ? error.message : 'Detection failed'
+        });
+      }
+    },
+
+    /**
      * Add files and detect their encodings.
      * Updates status: pending → detecting → ready/skipped/error
      * @param paths Optional array of full file paths (Tauri only)
      */
     async addFilesWithDetection(files: File[], defaultLanguage: string, paths?: string[]) {
-      // First add all files as pending
-      const newEntries = files.map((file, index) => ({
-        id: crypto.randomUUID(),
-        name: file.name,
-        file,
-        path: paths?.[index],
-        encoding: '',
-        language: defaultLanguage,
-        status: 'pending' as FileStatus
-      }));
+      // Create entries, validating each file
+      const newEntries = files.map((file, index) => {
+        const validationError = this.validateFile(file);
+        return {
+          id: crypto.randomUUID(),
+          name: file.name,
+          file,
+          path: paths?.[index],
+          encoding: '',
+          language: defaultLanguage,
+          status: (validationError ? 'error' : 'pending') as FileStatus,
+          error: validationError
+        };
+      });
 
       update(entries => [...entries, ...newEntries]);
 
-      // Detect encoding for each file
-      for (const entry of newEntries) {
-        update(entries =>
-          entries.map(e => e.id === entry.id ? { ...e, status: 'detecting' as FileStatus } : e)
-        );
-
-        try {
-          const result = await adapter.detectEncoding(entry.file);
-
-          if (result.encoding.toUpperCase() === 'UTF-8') {
-            update(entries =>
-              entries.map(e => e.id === entry.id ? { ...e, encoding: result.encoding, status: 'skipped' as FileStatus } : e)
-            );
-          } else {
-            update(entries =>
-              entries.map(e => e.id === entry.id ? { ...e, encoding: result.encoding, status: 'ready' as FileStatus } : e)
-            );
-          }
-        } catch (error) {
-          update(entries =>
-            entries.map(e => e.id === entry.id ? {
-              ...e,
-              status: 'error' as FileStatus,
-              error: error instanceof Error ? error.message : 'Detection failed'
-            } : e)
-          );
-        }
+      // Detect encoding for valid files only
+      const validEntries = newEntries.filter(e => e.status === 'pending');
+      for (const entry of validEntries) {
+        await this.detectEncoding(entry);
       }
     },
 
