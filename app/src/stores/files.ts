@@ -200,20 +200,13 @@ function createFilesStore() {
                 : outputName;
 
               // Check if file exists and ask before overwrite (Tauri only)
-              if (settings.askBeforeOverwrite && adapter.fileExists) {
-                const exists = await adapter.fileExists(outputPath);
-                if (exists) {
-                  const { ask } = await import('@tauri-apps/plugin-dialog');
-                  const shouldOverwrite = await ask(
-                    `File "${outputName}" already exists. Overwrite?`,
-                    { title: 'Confirm Overwrite', kind: 'warning' }
+              if (settings.askBeforeOverwrite && adapter.confirmOverwrite) {
+                const shouldProceed = await adapter.confirmOverwrite(outputPath, outputName);
+                if (!shouldProceed) {
+                  update(entries =>
+                    entries.map(e => e.id === entry.id ? { ...e, status: 'ready' as FileStatus } : e)
                   );
-                  if (!shouldOverwrite) {
-                    update(entries =>
-                      entries.map(e => e.id === entry.id ? { ...e, status: 'ready' as FileStatus } : e)
-                    );
-                    continue;
-                  }
+                  continue;
                 }
               }
 

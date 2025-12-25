@@ -109,8 +109,16 @@ export const tauriAdapter: FileAdapter = {
     return true;
   },
 
-  async fileExists(path: string): Promise<boolean> {
+  async confirmOverwrite(path: string, filename: string): Promise<boolean> {
     const { exists } = await import('@tauri-apps/plugin-fs');
-    return exists(path);
+    const fileExists = await exists(path);
+
+    if (!fileExists) return true;
+
+    const { ask } = await import('@tauri-apps/plugin-dialog');
+    return ask(
+      `File "${filename}" already exists. Overwrite?`,
+      { title: 'Confirm Overwrite', kind: 'warning' }
+    );
   },
 };
