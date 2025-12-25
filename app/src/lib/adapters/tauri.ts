@@ -17,7 +17,7 @@ async function readFileFromPath(path: string): Promise<File> {
 export const tauriAdapter: FileAdapter = {
   async detectEncoding(file: File): Promise<EncodingInfo> {
     const buffer = await file.arrayBuffer();
-    const data = Array.from(new Uint8Array(buffer));
+    const data = new Uint8Array(buffer);
 
     const [encoding] = await invoke<[string, number]>('detect_encoding', { data });
 
@@ -27,7 +27,7 @@ export const tauriAdapter: FileAdapter = {
   async convertFile(file: File, sourceEncoding: string): Promise<ConversionResult> {
     try {
       const buffer = await file.arrayBuffer();
-      const data = Array.from(new Uint8Array(buffer));
+      const data = new Uint8Array(buffer);
 
       const content = await invoke<string>('convert_to_utf8', {
         data,
