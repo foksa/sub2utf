@@ -195,12 +195,29 @@ function createFilesStore() {
               }
             } else {
               // Auto-save next to original or just use filename
-              if (entry.path) {
-                const dir = entry.path.substring(0, entry.path.lastIndexOf('/') + 1);
-                await adapter.saveFile(dir + outputName, result.content);
-              } else {
-                await adapter.saveFile(outputName, result.content);
+              const outputPath = entry.path
+                ? entry.path.substring(0, entry.path.lastIndexOf('/') + 1) + outputName
+                : outputName;
+
+              // Check if file exists and ask before overwrite (Tauri only)
+              if (settings.askBeforeOverwrite && adapter.fileExists) {
+                const exists = await adapter.fileExists(outputPath);
+                if (exists) {
+                  const { ask } = await import('@tauri-apps/plugin-dialog');
+                  const shouldOverwrite = await ask(
+                    `File "${outputName}" already exists. Overwrite?`,
+                    { title: 'Confirm Overwrite', kind: 'warning' }
+                  );
+                  if (!shouldOverwrite) {
+                    update(entries =>
+                      entries.map(e => e.id === entry.id ? { ...e, status: 'ready' as FileStatus } : e)
+                    );
+                    continue;
+                  }
+                }
               }
+
+              await adapter.saveFile(outputPath, result.content);
             }
 
             update(entries =>

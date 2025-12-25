@@ -19,6 +19,8 @@ export interface Settings {
   languages: LanguageOption[];
   /** Prompt for save location instead of saving next to original (Tauri only) */
   promptForSaveLocation: boolean;
+  /** Ask before overwriting existing files (Tauri only) */
+  askBeforeOverwrite: boolean;
 }
 
 const STORAGE_KEY = 'sub2utf-settings';
@@ -51,7 +53,8 @@ const defaultSettings: Settings = {
     { code: 'sk', name: 'Slovak' },
     { code: 'hu', name: 'Hungarian' }
   ],
-  promptForSaveLocation: false
+  promptForSaveLocation: false,
+  askBeforeOverwrite: false
 };
 
 /** Load settings from localStorage, falling back to defaults */

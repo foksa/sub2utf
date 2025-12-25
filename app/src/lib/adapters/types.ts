@@ -67,4 +67,9 @@ export interface FileAdapter {
    * @returns true if saved, false if cancelled
    */
   saveFileWithDialog?(defaultName: string, content: string): Promise<boolean>;
+
+  /**
+   * Check if a file exists at the given path (Tauri only)
+   */
+  fileExists?(path: string): Promise<boolean>;
 }

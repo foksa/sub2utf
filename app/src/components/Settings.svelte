@@ -13,6 +13,7 @@
 
   let defaultLang = $state($settingsStore.defaultLanguage);
   let promptForSaveLocation = $state($settingsStore.promptForSaveLocation);
+  let askBeforeOverwrite = $state($settingsStore.askBeforeOverwrite);
   let activeTab = $state<'languages' | 'encodings'>('languages');
 
   // Selected encodings and languages (as Sets for easy lookup)
@@ -59,7 +60,8 @@
       defaultLanguage: defaultLang,
       encodings: Array.from(selectedEncodings),
       languages: langs,
-      promptForSaveLocation
+      promptForSaveLocation,
+      askBeforeOverwrite
     });
     onclose();
   }
@@ -68,6 +70,7 @@
     settingsStore.reset();
     defaultLang = 'sr';
     promptForSaveLocation = false;
+    askBeforeOverwrite = false;
     selectedEncodings = new Set($settingsStore.encodings);
     selectedLanguages = new Set($settingsStore.languages.map(l => l.code));
   }
@@ -84,6 +87,10 @@
       <label class="toggle-field">
         <input type="checkbox" role="switch" bind:checked={promptForSaveLocation} />
         <span>Ask where to save each file</span>
+      </label>
+      <label class="toggle-field">
+        <input type="checkbox" role="switch" bind:checked={askBeforeOverwrite} />
+        <span>Ask before overwriting existing files</span>
       </label>
       <hr />
     {/if}
